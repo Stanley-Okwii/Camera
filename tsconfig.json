@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": "./",
+    "outDir": "dist/tsc",
+    "noEmitOnError": true,
+    "sourceMap": true,
+    "module": "amd",
+    "target": "es5",
+    "types": [ "mendix-client" ],
+    "moduleResolution": "node",
+    "declaration": false,
+    "lib": [ "es5", "dom", "scripthost", "es2015.promise" ],
+    "removeComments": true,
+    "noLib": false,
+    "watch": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "exclude": [
+    "dist/",
+    "node_modules/"
+  ]
+}
