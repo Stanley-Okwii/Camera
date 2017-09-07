@@ -1,2 +1,3 @@
+
 # Camera
-Enables users take pictures from their computers and let them choose what they would like to do with them
+Allows users to use the web camera on their mendix applications.

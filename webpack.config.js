@@ -1,43 +1,53 @@
-var webpack = require("webpack");
-var CopyWebpackPlugin = require("copy-webpack-plugin");
+const webpack = require("webpack");
+const path = require("path");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-module.exports = {
-    entry:
-    {
-        WebCam: "./src/Camera/WebCam.ts"
-    },
+const pkg = require("./package");
+const widgetName = pkg.widgetName;
+const name = pkg.widgetName.toLowerCase();
+
+const widgetConfig = {
+    entry: `./src/components/${widgetName}Container.ts`,
     output: {
-        path: __dirname + "/dist/tmp",
-        filename: "src/widget/WebCam.js",
+        path: path.resolve(__dirname, "dist/tmp"),
+        filename: `src/com/mendix/widget/custom/${name}/${widgetName}.js`,
         libraryTarget: "umd"
     },
     resolve: {
-        extensions: [".ts"],
+        extensions: [ ".ts", ".js", ".json" ],
+        alias: {
+            "tests": path.resolve(__dirname, "./tests")
+        }
     },
     module: {
         rules: [
             { test: /\.ts$/, use: "ts-loader" },
-            {
-                test: /\.css$/, loader: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader"
-                })
-            }
+            { test: /\.css$/, loader: ExtractTextPlugin.extract({
+                fallback: "style-loader",
+                use: "css-loader"
+            }) },
+            { test: /\.scss$/, loader: ExtractTextPlugin.extract({
+                fallback: "style-loader",
+                use: "css-loader!sass-loader"
+            }) }
         ]
     },
     devtool: "source-map",
-    externals: [/^mxui\/|^mendix\/|^dojo\/|^dijit\//],
+    externals: [ "react", "react-dom" ],
     plugins: [
         new CopyWebpackPlugin([
             { from: "src/**/*.js" },
-            { from: "src/**/*.xml" }
+            { from: "src/**/*.xml" },
+            { from: "src/**/*.png", to: `src/com/mendix/widget/custom/${name}/` }
         ], {
-                copyUnmodified: true
-            }),
-        new ExtractTextPlugin("./src/widget/ui/Camera.css"),
+            copyUnmodified: true
+        }),
+        new ExtractTextPlugin({ filename: `./src/com/mendix/widget/custom/${name}/ui/${widgetName}.css` }),
         new webpack.LoaderOptionsPlugin({
             debug: true
         })
     ]
 };
+
+module.exports = [ widgetConfig ];
