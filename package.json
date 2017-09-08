@@ -86,6 +86,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
+    "canvas-to-blob": "0.0.0",
     "classnames": "^2.2.5",
     "react-addons-css-transition-group": "^15.6.0",
     "react-infinite-calendar": "^2.3.1"

@@ -1,9 +1,7 @@
 import { Component, createElement } from "react";
 import { Alert } from "./Alert";
-import { Camera } from "./Camera";
-import InfiniteCalendar from "react-infinite-calendar";
-// tslint:disable-next-line:no-submodule-imports
-import "react-infinite-calendar/styles.css";
+import { cameraButton ,BootstrapStyle } from "./Camera";
+import CanvasToBlob from "canvas-to-blob";
 
 interface WrapperProps {
     class: string;
@@ -13,11 +11,13 @@ interface WrapperProps {
 }
 
 export interface ContainerProps extends WrapperProps {
- //
+    bootstrapStyle: BootstrapStyle;
+    valueAttribute: string;
 }
 
 interface ContainerState {
-    // initialRate: number;
+    initialRate: string;
+    value?: string;
 }
 
 export default class CameraContainer extends Component<ContainerProps, ContainerState> {
@@ -28,23 +28,22 @@ export default class CameraContainer extends Component<ContainerProps, Container
 
         this.subscriptionHandles = [];
         // initialize state (if there's state)
-        // this.state = {
-        //     // initialRate: this.props.mxObject
-        //     //     ? this.props.mxObject.get(this.props.rateAttribute) as number
-        //     //     : 0
-        // };
+        this.state = {
+            // initialRate: this.props.mxObject
+            initialRate: "Stanley",
+            value: "badiguy"
+        };
         this.subscribe(this.props.mxObject);
     }
 
     render() {
-        const today = new Date();
-        const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-        return createElement(InfiniteCalendar, {
-            width: 400,
-            height: 600,
-            selected: today,
-            disabledDays: [ 0, 6 ],
-            minDate: lastWeek
+        return createElement(cameraButton, {
+            bootstrapStyle: "danger",
+            className: this.props.class,
+            style: CameraContainer.parseStyle(this.props.style),
+            label: "stanley",
+           // type: "button",
+            value: "Stanley"
         });
     }
 
@@ -67,19 +66,22 @@ export default class CameraContainer extends Component<ContainerProps, Container
             }));
         }
     }
+     private startCamera() {
 
-    private unSubscribe() {
+     }
+  
+     private unSubscribe() {
         this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
         this.subscriptionHandles = [];
     }
 
     private updateRating(mxObject: mendix.lib.MxObject) {
-    // to check on later
+        // to check on later
     }
 
     public static validateProps(props: ContainerProps) {
-      // to check on later
-        }
+        // to check on later
+    }
 
     public static parseStyle(style = ""): { [key: string]: string } {
         try {
