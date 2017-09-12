@@ -1,5 +1,5 @@
 {
-  "name": "mobile-calendar",
+  "name": "camera",
   "widgetName": "Camera",
   "version": "0.0.1",
   "description": "This widget lets users rate an object with stars or custom ic .",
@@ -16,11 +16,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mendixlabs/star-rating"
+    "url": "https://github.com/Stanley-Okwii/Camera"
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/mendixlabs/star-rating/issues"
+    "url": "https://github.com/Stanley-Okwii/Camera/issues"
   },
   "babel": {
     "presets": [
@@ -35,6 +35,7 @@
     "@types/enzyme": "^2.8.4",
     "@types/jasmine": "^2.5.47",
     "@types/karma": "^0.13.35",
+    "@types/prop-types": "^15.5.1",
     "@types/react": "^15.6.0",
     "@types/react-dom": "^15.5.0",
     "babel-core": "^6.22.1",
@@ -88,7 +89,6 @@
   "dependencies": {
     "canvas-to-blob": "0.0.0",
     "classnames": "^2.2.5",
-    "react-addons-css-transition-group": "^15.6.0",
-    "react-infinite-calendar": "^2.3.1"
+    "react-webcam": "^0.2.0"
   }
 }

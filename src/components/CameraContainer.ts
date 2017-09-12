@@ -1,82 +1,73 @@
 import { Component, createElement } from "react";
 import { Alert } from "./Alert";
-import { cameraButton ,BootstrapStyle } from "./Camera";
+import * as WebCam from "react-webcam";
+import { cameraButton, BootstrapStyle } from "./Camera";
 import CanvasToBlob from "canvas-to-blob";
 
 interface WrapperProps {
     class: string;
     mxObject: mendix.lib.MxObject;
-    readOnly: boolean;
     style: string;
 }
 
 export interface ContainerProps extends WrapperProps {
     bootstrapStyle: BootstrapStyle;
     valueAttribute: string;
+
 }
 
 interface ContainerState {
-    initialRate: string;
-    value?: string;
+    //value?: string;
+    screenshot: any;
 }
 
 export default class CameraContainer extends Component<ContainerProps, ContainerState> {
     private subscriptionHandles: number[];
-
     constructor(props: ContainerProps) {
         super(props);
 
-        this.subscriptionHandles = [];
-        // initialize state (if there's state)
         this.state = {
-            // initialRate: this.props.mxObject
-            initialRate: "Stanley",
-            value: "badiguy"
+            screenshot: null
         };
-        this.subscribe(this.props.mxObject);
+
+        // this.handleStartClick = this.handleStartClick.bind(this);  
+        this.takePicture = this.takePicture.bind(this);
+        //this.clearPhoto = this.clearPhoto.bind(this);
     }
 
     render() {
-        return createElement(cameraButton, {
-            bootstrapStyle: "danger",
-            className: this.props.class,
-            style: CameraContainer.parseStyle(this.props.style),
-            label: "stanley",
-           // type: "button",
-            value: "Stanley"
+        const cameraElement = createElement(WebCam, {
+            audio: false,
+            height: 350,
+            width: 350,
+            style: "display: none"
         });
+        const activateButtonElement = createElement(cameraButton, {
+            //bootstrapStyle: "btn btn-primary",
+            className: "btn btn-primary",
+            // label: this.props.label,
+            onClickAction: this.startCamera,
+            style: CameraContainer.parseStyle(this.props.style),
+            type: "button",
+            value: "Activate Camera"
+        });
+        return createElement("span",{className:"container-fluid"},activateButtonElement,cameraElement);
     }
 
     componentWillReceiveProps(nextProps: ContainerProps) {
-        this.subscribe(nextProps.mxObject);
-        this.updateRating(nextProps.mxObject);
+
     }
 
     componentWillUnmount() {
-        this.unSubscribe();
+
     }
 
-    private subscribe(contextObject?: mendix.lib.MxObject) {
-        this.unSubscribe();
+    private takePicture() {
 
-        if (contextObject) {
-            this.subscriptionHandles.push(window.mx.data.subscribe({
-                callback: () => this.updateRating(contextObject),
-                guid: contextObject.getGuid()
-            }));
-        }
-    }
-     private startCamera() {
-
-     }
-  
-     private unSubscribe() {
-        this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
-        this.subscriptionHandles = [];
     }
 
-    private updateRating(mxObject: mendix.lib.MxObject) {
-        // to check on later
+    private startCamera() {
+        //.getElementsByTagName("WebCam")
     }
 
     public static validateProps(props: ContainerProps) {

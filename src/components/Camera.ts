@@ -1,5 +1,6 @@
 import * as classNames from "classnames";
 import { SFC, createElement } from "react";
+import * as WebCam from "react-webcam";
 
 export interface CameraProps {
     defaultValue?: string;
@@ -10,13 +11,14 @@ export interface CameraProps {
     clickable?: boolean;
     onClickAction?: () => void;
     getRef?: (node: HTMLElement) => void;
-    label: string;
-    type?: string
+    label?: string;
+    type?: string;
+    constraints?:{};
 }
 
-export type BootstrapStyle = "default" | "info" | "inverse" | "primary" | "danger" | "success" | "warning";
+export type BootstrapStyle = "default" | "info" | "inverse" | "btn btn-primary" | "danger" | "success" | "warning";
 
-export const cameraButton: SFC<CameraProps> = (props) => createElement("button",
+export const cameraButton: SFC<CameraProps> = (props) => createElement("input",
     {
         className: classNames("widget-badge", {
             [`label-${props.bootstrapStyle}`]: !!props.bootstrapStyle,
@@ -24,7 +26,6 @@ export const cameraButton: SFC<CameraProps> = (props) => createElement("button",
         }),
         onClick: props.onClickAction,
         style: props.style,
-        label: props.label,
+        type: props.type,
         value: props.value
     });
-
