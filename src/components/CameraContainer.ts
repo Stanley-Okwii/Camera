@@ -2,7 +2,6 @@ import { Component, createElement } from "react";
 import { Alert } from "./Alert";
 import * as WebCam from "react-webcam";
 import { cameraButton, BootstrapStyle } from "./Camera";
-import CanvasToBlob from "canvas-to-blob";
 
 interface WrapperProps {
     class: string;
@@ -13,47 +12,73 @@ interface WrapperProps {
 export interface ContainerProps extends WrapperProps {
     bootstrapStyle: BootstrapStyle;
     valueAttribute: string;
-
+    resolutionWidth: number;
+    resolutionHeight: number;
 }
 
 interface ContainerState {
-    //value?: string;
+    cameraState: any;
     screenshot: any;
+    active: boolean;
+
 }
 
 export default class CameraContainer extends Component<ContainerProps, ContainerState> {
     private subscriptionHandles: number[];
+    private webcam = WebCam;
     constructor(props: ContainerProps) {
         super(props);
 
         this.state = {
-            screenshot: null
+            screenshot: null,
+            active: false,
+            cameraState: null,
         };
 
-        // this.handleStartClick = this.handleStartClick.bind(this);  
+        this.setRef = this.setRef.bind(this);
+        this.startCamera = this.startCamera.bind(this);
         this.takePicture = this.takePicture.bind(this);
-        //this.clearPhoto = this.clearPhoto.bind(this);
     }
 
     render() {
-        const cameraElement = createElement(WebCam, {
-            audio: false,
-            height: 350,
-            width: 350,
-            style: "display: none"
-        });
-        const activateButtonElement = createElement(cameraButton, {
-            //bootstrapStyle: "btn btn-primary",
-            className: "btn btn-primary",
-            // label: this.props.label,
-            onClickAction: this.startCamera,
-            style: CameraContainer.parseStyle(this.props.style),
-            type: "button",
-            value: "Activate Camera"
-        });
-        return createElement("span",{className:"container-fluid"},activateButtonElement,cameraElement);
-    }
+        let cameraElement;
+        let activateButtonElement;
+        let captureButton;
+        let picturetaken;
+        if (this.state.active) {
+            cameraElement = createElement(this.webcam, {
+                audio: false,
+                ref: this.setRef,
+                screenshotFormat: "image/jpeg",
+                height: this.props.resolutionHeight,
+                width: this.props.resolutionWidth
+            });
+            captureButton = createElement(cameraButton, {
+                bootstrapStyle: "btn btn-primary",
+                onClickAction: this.takePicture,
+                style: CameraContainer.parseStyle(this.props.style),
+                type: "button",
+                value: "Take picture"
+            });
+            if (this.state.screenshot) {
+                picturetaken = createElement("img", {
+                    src: this.state.screenshot,
+                    style: CameraContainer.parseStyle(this.props.style),
+                    alt: "image not found"
+                });
+            }
+        } else {
+            activateButtonElement = createElement(cameraButton, {
+                bootstrapStyle: "btn btn-primary",
+                onClickAction: this.startCamera,
+                style: CameraContainer.parseStyle(this.props.style),
+                type: "button",
+                value: "Activate Camera"
+            });
+        }
 
+        return createElement("div", { className: "" }, activateButtonElement, cameraElement, picturetaken, captureButton);
+    }
     componentWillReceiveProps(nextProps: ContainerProps) {
 
     }
@@ -61,13 +86,17 @@ export default class CameraContainer extends Component<ContainerProps, Container
     componentWillUnmount() {
 
     }
+    private setRef(webcam: any) {
+        this.webcam = webcam; 
+    }
 
     private takePicture() {
-
+        const screenshot1 = this.webcam.getScreenshot();
+        this.setState({ screenshot: screenshot1 });
     }
 
     private startCamera() {
-        //.getElementsByTagName("WebCam")
+        this.setState({ active: !this.state.active });
     }
 
     public static validateProps(props: ContainerProps) {

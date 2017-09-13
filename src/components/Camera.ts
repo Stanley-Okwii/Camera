@@ -13,7 +13,6 @@ export interface CameraProps {
     getRef?: (node: HTMLElement) => void;
     label?: string;
     type?: string;
-    constraints?:{};
 }
 
 export type BootstrapStyle = "default" | "info" | "inverse" | "btn btn-primary" | "danger" | "success" | "warning";
