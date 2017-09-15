@@ -15,7 +15,7 @@ export interface CameraProps {
     type?: string;
 }
 
-export type BootstrapStyle = "default" | "info" | "inverse" | "btn btn-primary" | "danger" | "success" | "warning";
+export type BootstrapStyle = "default" | "info" | "inverse" | "btn btn-primary" | "danger" | "success" | "warning" | "wx-mxwx-button-extra";
 
 export const cameraButton: SFC<CameraProps> = (props) => createElement("input",
     {

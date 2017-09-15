@@ -1,9 +1,8 @@
 import { Component, createElement } from "react";
 import { Alert } from "./Alert";
 import * as WebCam from "react-webcam";
-import * as ReactDOM from  "react-dom";
 import { cameraButton, BootstrapStyle } from "./Camera";
-//var ReactDOM = require('react-dom');
+
 interface WrapperProps {
     class: string;
     mxObject: mendix.lib.MxObject;
@@ -15,6 +14,9 @@ export interface ContainerProps extends WrapperProps {
     valueAttribute: string;
     resolutionWidth: number;
     resolutionHeight: number;
+    captureButtonClassName: string;
+    recaptureButtonClassName: string;
+    usePictureButtonClassName: string;
 }
 
 interface ContainerState {
@@ -41,88 +43,34 @@ export default class CameraContainer extends Component<ContainerProps, Container
         this.setRef = this.setRef.bind(this);
         this.startCamera = this.startCamera.bind(this);
         this.takePicture = this.takePicture.bind(this);
+        this.retakePicture = this.retakePicture.bind(this);
     }
-
-    render() {
-        let cameraElement;
-        let activateButtonElement;
-        let captureButton;
-        let picturetaken;
-        let cameraNode;
-        let buttonNode;
-        let buttonNode2;
-        let retakePictureButton;
-        let usePictureButton;
-        let cameraNode2;
-        cameraElement = createElement(WebCam, {
-            audio: false,
-            ref: this.setRef,
-            screenshotFormat: "image/jpeg",
-            height: this.props.resolutionHeight,
-            width: this.props.resolutionWidth
-        });
-        captureButton = createElement(cameraButton, {
-            bootstrapStyle: "btn btn-primary",
-            onClickAction: this.takePicture,
-            style: CameraContainer.parseStyle(this.props.style),
-            type: "button",
-            value: "Take picture"
-        });
-        buttonNode2 = createElement("div", {
-            className: ""
-        }, retakePictureButton, usePictureButton
-        );
-        retakePictureButton = createElement(cameraButton, {
-            bootstrapStyle: "btn btn-primary",
+    componentDidMount(){
+       let activateButtonElement = createElement(cameraButton, {
+            bootstrapStyle: "wx-mxwx-button-extra",
             onClickAction: this.startCamera,
             style: CameraContainer.parseStyle(this.props.style),
             type: "button",
-            value: "Retake"
+            value: "Start Camera"
         });
-         usePictureButton = createElement(cameraButton, {
-            bootstrapStyle: "btn btn-primary",
-            //onClickAction: this.startCamera,
-            style: CameraContainer.parseStyle(this.props.style),
-            type: "button",
-            value: "Use Picture"
-        });
+        this.setState({buttonState: activateButtonElement});
+    }
+    render() {
 
-        picturetaken = createElement("img", {
-            src: this.state.screenshot,
-            style: CameraContainer.parseStyle(this.props.style),
-            alt: "image not found"
-        });
-        buttonNode = createElement("div", {
-            className: ""
-        }, captureButton);
-        buttonNode2 = createElement("div", { className: "" }, retakePictureButton, usePictureButton);
-        cameraNode = createElement("div", { className: "" }, cameraElement, buttonNode);
-        cameraNode2 = createElement("div", { className: "" }, picturetaken, buttonNode2);
+        
 
+
+        // cameraNode = createElement("div", { className: "" }, cameraElement, buttonNode);
         if (this.state.active) {
-            this.setState({ cameraState: cameraNode });
+            this.state.cameraState;
             if (this.state.screenshot) {
-                this.setState({ cameraState: cameraNode2 });
-                //this.setState({buttonState: null});
+                this.state.cameraState;
             }
         } else {
-           // this.setState({ buttonState: activateButtonElement });
-           activateButtonElement = createElement(cameraButton, {
-            bootstrapStyle: "btn btn-primary",
-            onClickAction: this.startCamera,
-            style: CameraContainer.parseStyle(this.props.style),
-            type: "button",
-            value: "Activate Camera"
-        });
+            this.state.buttonState;
+
         }
-        return createElement("div", { className: "" }, activateButtonElement, this.state.cameraState);
-    }
-    componentWillReceiveProps(nextProps: ContainerProps) {
-
-    }
-
-    componentWillUnmount() {
-
+        return createElement("div", { className: "" }, this.state.buttonState, this.state.cameraState);
     }
 
     private setRef(webcam: any) {
@@ -130,17 +78,81 @@ export default class CameraContainer extends Component<ContainerProps, Container
     }
 
     private takePicture() {
+        let picturetaken;
+        let buttonNode2;
+        let retakePictureButton;
+        let usePictureButton;
+        let cameraNode2;
+
+        buttonNode2 = createElement("div", {
+            className: ""
+        }, retakePictureButton, usePictureButton);
+
+        retakePictureButton = createElement(cameraButton, {
+            bootstrapStyle: "btn btn-primary",
+            onClickAction: this.retakePicture,
+            style: CameraContainer.parseStyle(this.props.style),
+            type: "button",
+            value: this.props.recaptureButtonClassName
+        });
+
+        usePictureButton = createElement(cameraButton, {
+            bootstrapStyle: "btn btn-primary",
+            //onClickAction: this.startCamera,
+            style: CameraContainer.parseStyle(this.props.style),
+            type: "button",
+            value: this.props.usePictureButtonClassName
+        });
+
+        picturetaken = createElement("img", {
+            src: this.state.screenshot,
+            style: CameraContainer.parseStyle(this.props.style),
+            alt: "image not found"
+        });
+
+        buttonNode2 = createElement("div", { className: "" }, retakePictureButton, usePictureButton);
         const screenshot1 = this.webcam.getScreenshot();
         this.setState({ screenshot: screenshot1 });
-        //this.setState({ active:false });
+        cameraNode2 = createElement("div", { className: "" }, picturetaken, buttonNode2);
+        this.setState({ cameraState: cameraNode2 });
+
+        
     }
 
     private startCamera() {
+        let cameraNode;
+        let cameraElement;
+        let buttonNode;
+        let captureButton;
+
+        cameraElement = createElement(WebCam, {
+            audio: false,
+            ref: this.setRef,
+            screenshotFormat: "image/jpeg",
+            height: this.props.resolutionHeight,
+            width: this.props.resolutionWidth
+        });
+
+        captureButton = createElement(cameraButton, {
+            bootstrapStyle: "btn btn-primary",
+            onClickAction: this.takePicture,
+            style: CameraContainer.parseStyle(this.props.style),
+            type: "button",
+            value: this.props.captureButtonClassName
+        });
+        buttonNode = createElement("div", {
+            className: ""
+        }, captureButton);
+
+        cameraNode = createElement("div", { className: "" }, cameraElement, buttonNode);
         this.setState({ active: !this.state.active });
+        this.setState({ cameraState: cameraNode });
+        this.setState({buttonState: null});
     }
 
-    public static validateProps(props: ContainerProps) {
-        // to check on later
+    private retakePicture() {
+        this.setState({ active: !this.state.active });
+        //this.setState({ cameraState: cameraNode });
     }
 
     public static parseStyle(style = ""): { [key: string]: string } {
@@ -157,7 +169,6 @@ export default class CameraContainer extends Component<ContainerProps, Container
             // tslint:disable-next-line no-console
             console.error("Failed to parse style", style, error);
         }
-
         return {};
     }
 }
