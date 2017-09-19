@@ -7,12 +7,12 @@
     </icon>
     <properties>
         <property key="resolutionWidth" type="integer" defaultValue="0">
-            <caption>Pixels horizontal</caption>
+            <caption>Image width</caption>
             <category>Picture size</category>
             <description>By default, the resolution of the picture is the same size as the camera view. With this and the next setting you can set the maximum picture resolution. Recommend is to use a 4:3 ratio like 1024x768. If specified (larger than 0) the width of the picture is set to this size if the camera view is wider than this value.</description>
         </property>
         <property key="resolutionHeight" type="integer" defaultValue="0">
-            <caption>Pixels vertical</caption>
+            <caption>Image height</caption>
             <category>Picture size</category>
             <description>The maximum number of vertical pixels. If specified (larger than 0) the height of the picture is set to this size if the camera view is wider than this value.</description>
         </property>
