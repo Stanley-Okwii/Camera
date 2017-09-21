@@ -3,97 +3,100 @@ import { Component, createElement } from "react";
 import * as WebCam from "react-webcam";
 
 export interface CameraProps {
-    className?: string;
-    style?: object;
-    audio: boolean;
-    height: number;
-    width: number;
-    screenshotFormat: string;
-    ref: string;
-    resolutionWidth: number;
-    resolutionHeight: number;
-    onClick?: () => void;
+    Width: number;
+    Height: number;
+    captureButtonName?: string;
+    recaptureButtonName?: string;
+    usePictureButtonName?: string;
+    startCameraButtonName?: string;
+    fileType: string;
+    filter?: any;
+    imageWidth: number;
+    imageHeight: number;
 }
+
 export interface CamState {
     cameraActive: boolean;
-    screenShot: string;
+    screenshot?: string;
     pictureTaken: boolean;
 }
 
+export type filefomats = "jpeg" | "png" | "webp";
+
 export class Camera extends Component<CameraProps, CamState> {
-    private webcam: any;
+    private webcam: any; // TODO: Add actual type for this
+
     constructor(props: CameraProps) {
         super(props);
         this.state = {
             cameraActive: false,
-            screenShot: "",
             pictureTaken: false
         };
-        this.setReference = this.setReference.bind(this);
+        this.setCameraReference = this.setCameraReference.bind(this);
         this.retakePicture = this.retakePicture.bind(this);
         this.takePicture = this.takePicture.bind(this);
         this.startCamera = this.startCamera.bind(this);
     }
+
     render() {
         if (this.state.cameraActive) {
             return createElement("div", {},
                 createElement(WebCam, {
                     audio: false,
-                    ref: this.setReference,
-                    screenshotFormat: "image/jpeg",
-                    height: this.props.resolutionHeight,
-                    width: this.props.resolutionWidth
-                }), createElement("button", {
-                    className: "btn mx-button btn-default",
-                    onClick: this.takePicture
-                }, "Take photo"
-                ));
-
-        } else if (this.state.pictureTaken) {
-            return createElement("div", { className: "" },
-                createElement("img", {
-                    src: this.state.screenShot,
-                    style: {},
-                    alt: "image path could not be found!"
+                    ref: this.setCameraReference,
+                    screenshotFormat: this.props.fileType,
+                    height: this.props.Height,
+                    width: this.props.Width,
+                    style: { filter: this.props.filter }
                 }),
-                createElement("div", {
-                    className: ""
-                }, createElement("button", {
-                    className: "btn mx-button btn-default",
-                    onClick: this.retakePicture
-                }, "Retake Photo"),
-                    createElement("span", {
-                        className: ""
-                    }, " "),
+                createElement("div", {},
                     createElement("button", {
-                        className: "btn mx-button btn-default"
-                    }, "Use Photo")
+                        className: "btn mx-button btn-default",
+                        onClick: this.takePicture
+                    }, this.props.captureButtonName)
                 )
             );
-        } else {
-            return createElement("button", {
-                className: "btn mx-button btn-default",
-                onClick: this.startCamera
-            }, "Start Camera");
         }
+
+        if (this.state.pictureTaken && this.state.screenshot) {
+            return createElement("div", {},
+                createElement("img", {
+                    src: this.state.screenshot, style: {
+                        filter: this.props.filter
+                    },
+                    width: this.props.imageWidth,
+                    height: this.props.imageHeight,
+                    alt: "image path could not be found!"
+                }),
+                createElement("div", {},
+                    createElement("button", { className: "btn mx-button btn-default", onClick: this.retakePicture },
+                        this.props.recaptureButtonName
+                    ),
+                    createElement("span", {}, " "),
+                    createElement("button", { className: "btn mx-button btn-default" }, this.props.usePictureButtonName)
+                )
+            );
+        }
+
+        return createElement("button", { className: "btn mx-button btn-default", onClick: this.startCamera },
+            this.props.startCameraButtonName
+        );
     }
 
-    private setReference(webcam: any) {
+    private setCameraReference(webcam: any) {
         this.webcam = webcam;
     }
 
     private startCamera() {
-        this.setState({ cameraActive: !this.state.cameraActive });
+        this.setState({ cameraActive: true });
     }
 
     private takePicture() {
-        this.setState({ screenShot: this.webcam.getScreenshot() });
-        this.setState({ pictureTaken: !this.state.pictureTaken });
-        this.setState({ cameraActive: !this.state.cameraActive });
+        this.setState({ screenshot: this.webcam.getScreenshot(), pictureTaken: true, cameraActive: false });
     }
 
     private retakePicture() {
-        this.setState({ cameraActive: !this.state.cameraActive });
-        this.setState({ pictureTaken: !this.state.pictureTaken });
+        this.setState({ cameraActive: true, pictureTaken: false });
     }
+
 }
