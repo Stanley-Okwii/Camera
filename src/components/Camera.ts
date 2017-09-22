@@ -13,23 +13,25 @@ export interface CameraProps {
     filter?: any;
     imageWidth: number;
     imageHeight: number;
+    onClickAction: any;
 }
 
-export interface CamState {
+export interface CameraState {
     cameraActive: boolean;
-    screenshot?: string;
+    screenshot: string;
     pictureTaken: boolean;
 }
 
 export type filefomats = "jpeg" | "png" | "webp";
 
-export class Camera extends Component<CameraProps, CamState> {
+export class Camera extends Component<CameraProps, CameraState> {
     private webcam: any; // TODO: Add actual type for this
 
     constructor(props: CameraProps) {
         super(props);
         this.state = {
             cameraActive: false,
+            screenshot: "",
             pictureTaken: false
         };
         this.setCameraReference = this.setCameraReference.bind(this);
@@ -61,9 +63,7 @@ export class Camera extends Component<CameraProps, CamState> {
         if (this.state.pictureTaken && this.state.screenshot) {
             return createElement("div", {},
                 createElement("img", {
-                    src: this.state.screenshot, style: {
-                        filter: this.props.filter
-                    },
+                    src: this.state.screenshot, style: { filter: this.props.filter },
                     width: this.props.imageWidth,
                     height: this.props.imageHeight,
                     alt: "image path could not be found!"
@@ -73,7 +73,10 @@ export class Camera extends Component<CameraProps, CamState> {
                         this.props.recaptureButtonName
                     ),
                     createElement("span", {}, " "),
-                    createElement("button", { className: "btn mx-button btn-default" }, this.props.usePictureButtonName)
+                    createElement("button", {
+                        className: "btn mx-button btn-default",
+                        onClick: () => this.props.onClickAction(this.state.screenshot)
+                    }, this.props.usePictureButtonName)
                 )
             );
         }

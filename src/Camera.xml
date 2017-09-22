@@ -65,10 +65,20 @@
                 <enumerationValue key="grayscale">Black and white </enumerationValue>
                 <enumerationValue key="none">Colored </enumerationValue>
                 <enumerationValue key="sepia">Sepia </enumerationValue>
-                 <enumerationValue key="huerotate">Hue </enumerationValue>
+                <enumerationValue key="huerotate">Hue </enumerationValue>
             </enumerationValues>
         </property>
-
+        <property key="photo" type="entity">
+            <caption>Select entity</caption>
+            <category>Image</category>
+            <description>This is the entity property</description>
+        </property>
+            <property key="savePhotoMicroflow" type="microflow" required="false" defaultValue="">
+            <caption>Save photo microflow</caption>
+            <category>Image</category>
+            <description>The microflow to execute on save photo</description>
+            <returnType type="Boolean" />
+        </property>
         <property key="errorMessage" type="translatableString">
             <caption>Error message</caption>
             <category>Error handling</category>
