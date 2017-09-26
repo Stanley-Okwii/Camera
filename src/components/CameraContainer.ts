@@ -1,6 +1,6 @@
 import { Component, createElement } from "react";
 import * as WebCam from "react-webcam";
-import { CanvasToBlob } from "canvas-to-blob";
+import { EnumerateDevices } from "enumerate-devices";
 import { Camera, CameraState, filefomats } from "./Camera";
 
 interface WrapperProps {
@@ -30,7 +30,7 @@ export default class CameraContainer extends Component<ContainerProps> {
         super(props);
         this.formatStlye = this.formatStlye.bind(this);
         this.savePhoto = this.savePhoto.bind(this);
-        this.dataURItoBlob = this.dataURItoBlob.bind(this);
+        this.base64toBlob = this.base64toBlob.bind(this);
     }
 
     render() {
@@ -62,40 +62,36 @@ export default class CameraContainer extends Component<ContainerProps> {
         return "none";
     }
 
-    private savePhoto(i: string) {
-        const a = this.dataURItoBlob(i);
+    private savePhoto(image: { src: string, id: string }) {
         mx.data.create({
             callback: (object) => {
-                mx.data.saveDocument(object.getGuid(),
-                // tslint:disable-next-line:no-empty
-                "camera.jpeg", {}, a, () => { }, (error: Error) => { });
-                // tslint:disable-next-line:no-console
-                console.log("saved");
-
+                mx.data.saveDocument(
+                    object.getGuid(),
+                    image.id,
+                    {},
+                    this.base64toBlob(image.src),
+                    () => { mx.ui.info("Photo saved!", false); },
+                    error => { mx.ui.error(error.message, false); }
+                );
             },
             entity: this.props.photo,
-            error: () => {
-                mx.ui.error("Could not commit object:");
+            error: error => {
+                mx.ui.error("Could not create object: photo:" + error);
             }
         });
-        // alert(a);
     }
 
-    private dataURItoBlob(dataURI: string, callback?: () => void) {
-        // convert base64 to raw binary data held in a string
-        // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-        const byteString = atob(dataURI.split(",")[1]);
-        // separate out the mime component
-        const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    private base64toBlob(base64Uri: string, callback?: () => void) {
+        const byteString = atob(base64Uri.split(",")[1]);
+        const mimeString = base64Uri.split(",")[0].split(":")[1].split(";")[0];
+        const bufferArray = new ArrayBuffer(byteString.length);
+        const uintArray = new Uint8Array(bufferArray);
 
-        // write the bytes of the string to an ArrayBuffer
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
         for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
+            uintArray[i] = byteString.charCodeAt(i);
         }
-        // write the ArrayBuffer to a blob, and you're done
-        const bb = new Blob([ ab ]);
-        return bb;
+
+        return new Blob([ bufferArray ]);
     }
+
 }

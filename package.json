@@ -89,6 +89,7 @@
   "dependencies": {
     "canvas-to-blob": "0.0.0",
     "classnames": "^2.2.5",
+    "enumerate-devices": "^1.1.1",
     "react-webcam": "^0.2.0"
   }
 }

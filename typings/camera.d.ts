@@ -1,2 +1,2 @@
 declare module "react-webcam";
-declare module "canvas-to-blob";
+declare module "enumerate-devices";
