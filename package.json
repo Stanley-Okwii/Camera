@@ -2,7 +2,7 @@
   "name": "camera",
   "widgetName": "Camera",
   "version": "0.0.1",
-  "description": "This widget lets users rate an object with stars or custom ic .",
+  "description": "Allows users to take and save pictures on their mendix applications.",
   "scripts": {
     "start": "nodemon --watch webpack.config.js --watch Gruntfile.js --exec grunt",
     "pretest": "tsc && npm run lint && grunt release",
@@ -89,7 +89,6 @@
   "dependencies": {
     "canvas-to-blob": "0.0.0",
     "classnames": "^2.2.5",
-    "enumerate-devices": "^1.1.1",
     "react-webcam": "^0.2.0"
   }
 }

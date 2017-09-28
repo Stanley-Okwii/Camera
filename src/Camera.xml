@@ -73,12 +73,6 @@
             <category>Image</category>
             <description>This is the entity property</description>
         </property>
-            <property key="savePhotoMicroflow" type="microflow" required="false" defaultValue="">
-            <caption>Save photo microflow</caption>
-            <category>Image</category>
-            <description>The microflow to execute on save photo</description>
-            <returnType type="Boolean" />
-        </property>
         <property key="errorMessage" type="translatableString">
             <caption>Error message</caption>
             <category>Error handling</category>

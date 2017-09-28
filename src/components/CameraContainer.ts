@@ -1,6 +1,5 @@
 import { Component, createElement } from "react";
 import * as WebCam from "react-webcam";
-import { EnumerateDevices } from "enumerate-devices";
 import { Camera, CameraState, filefomats } from "./Camera";
 
 interface WrapperProps {
@@ -21,11 +20,9 @@ export interface ContainerProps extends WrapperProps {
     startCameraButtonName: string;
     imageFilter: string;
     photo: string;
-    savePhotoMicroflow: string;
 }
 
 export default class CameraContainer extends Component<ContainerProps> {
-    private Node: any;
     constructor(props: ContainerProps) {
         super(props);
         this.formatStlye = this.formatStlye.bind(this);
@@ -37,7 +34,7 @@ export default class CameraContainer extends Component<ContainerProps> {
         return createElement(Camera, {
             Width: this.props.capturingWindowWidth,
             Height: this.props.capturingWindowHeight,
-            fileType: "image/".concat(this.props.fileType),
+            fileType: this.props.fileType,
             usePictureButtonName: this.props.usePictureButtonName,
             captureButtonName: this.props.captureButtonName,
             startCameraButtonName: this.props.startCameraButtonName,
@@ -81,7 +78,7 @@ export default class CameraContainer extends Component<ContainerProps> {
         });
     }
 
-    private base64toBlob(base64Uri: string, callback?: () => void) {
+    private base64toBlob(base64Uri: string, callback?: () => void): Blob {
         const byteString = atob(base64Uri.split(",")[1]);
         const mimeString = base64Uri.split(",")[0].split(":")[1].split(";")[0];
         const bufferArray = new ArrayBuffer(byteString.length);

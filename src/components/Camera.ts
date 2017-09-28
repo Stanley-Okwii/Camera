@@ -10,43 +10,46 @@ export interface CameraProps {
     usePictureButtonName?: string;
     startCameraButtonName?: string;
     fileType: string;
-    filter?: any;
+    filter?: string;
     imageWidth: number;
     imageHeight: number;
-    onClickAction: any;
+    onClickAction: ({ }) => void;
 }
 
 export interface CameraState {
     screenshot: string;
     pictureTaken: boolean;
     cameraDevicePosition: number;
+    pictureId?: string;
 }
 
 export interface Webcam {
     getScreenshot: () => string;
     stream: {
-        active: boolean;
         id: string;
     };
-    pictureTaken: boolean;
+}
+
+export interface VideoElement {
+    srcObject: MediaStream;
 }
 
 export type filefomats = "jpeg" | "png" | "webp";
 
 export class Camera extends Component<CameraProps, CameraState> {
-    private webcam: any; // TODO: Add actual type for this
-    private videoElement: any;
-    private stream: any;
+    private webcam: Webcam;
+    private videoElement: HTMLVideoElement | null;
+    private outputStream: MediaStream;
     private availableDevices: string[] = [];
     constructor(props: CameraProps) {
         super(props);
         this.state = {
             screenshot: "",
             pictureTaken: false,
-            cameraDevicePosition: 0
+            cameraDevicePosition: 0,
+            pictureId: ""
         };
         this.setCameraReference = this.setCameraReference.bind(this);
-        this.swapCameraId = this.swapCameraId.bind(this);
         this.retakePicture = this.retakePicture.bind(this);
         this.getStream = this.getStream.bind(this);
         this.takePicture = this.takePicture.bind(this);
@@ -70,7 +73,7 @@ export class Camera extends Component<CameraProps, CameraState> {
                     createElement("button", {
                         className: "btn mx-button btn-default",
                         // tslint:disable-next-line:max-line-length
-                        onClick: () => this.props.onClickAction({ src: this.state.screenshot, id: this.webcam.id })
+                        onClick: () => this.props.onClickAction({ src: this.state.screenshot, id: this.state.pictureId })
                     }, this.props.usePictureButtonName)
                 )
             );
@@ -80,7 +83,7 @@ export class Camera extends Component<CameraProps, CameraState> {
             createElement(WebCam, {
                 audio: false,
                 ref: this.setCameraReference,
-                screenshotFormat: this.props.fileType,
+                screenshotFormat: "image/".concat(this.props.fileType),
                 height: this.props.Height,
                 width: this.props.Width,
                 style: { filter: this.props.filter }
@@ -90,42 +93,44 @@ export class Camera extends Component<CameraProps, CameraState> {
                     className: "btn mx-button btn-default",
                     onClick: this.takePicture
                 }, this.props.captureButtonName),
-                createElement("button", {
-                    className: "btn mx-button btn-default",
-                    onClick: this.changeCamera
-                }, "Switch")
+                createElement("span", {}, " "),
+                this.createSwitchCameraButton()
             )
         );
     }
 
-    componentDidMount() {
+    componentWillMount() {
         navigator.mediaDevices.enumerateDevices()
-            .then((devices: any) => {
-                devices.forEach((device: any) => {
+            .then((devices: {}[]) => {
+                devices.forEach((device: { kind: string, deviceId: string }) => {
                     if (device.kind === "videoinput") {
                         this.availableDevices.push(device.deviceId);
                     }
                 });
                 if (this.availableDevices.length >= 1) {
+                    this.setState({ cameraDevicePosition: this.availableDevices.length - 1 });
                     this.getStream();
                 }
             })
             .catch((error: Error) => {
-            // tslint:disable-next-line:no-console
-            console.log(error.name + ": " + error.message);
-        });
+                mx.ui.error(error.name + ": " + error.message);
+            });
     }
 
     componentDidUpdate() {
         this.getStream();
     }
 
-    private setCameraReference(webcam: any) {
+    private setCameraReference(webcam: Webcam) {
         this.webcam = webcam;
     }
 
     private takePicture() {
-        this.setState({ screenshot: this.webcam.getScreenshot(), pictureTaken: true });
+        this.setState({
+            screenshot: this.webcam.getScreenshot(),
+            pictureTaken: true,
+            pictureId: this.webcam.stream.id.concat("." + this.props.fileType)
+        });
     }
 
     private retakePicture() {
@@ -133,7 +138,7 @@ export class Camera extends Component<CameraProps, CameraState> {
     }
 
     private changeCamera() {
-        if ((this.state.cameraDevicePosition + 1) <= (this.availableDevices.length - 1)) {
+        if ((this.state.cameraDevicePosition) < (this.availableDevices.length - 1)) {
             this.setState({
                 cameraDevicePosition: this.state.cameraDevicePosition + 1
             });
@@ -141,33 +146,38 @@ export class Camera extends Component<CameraProps, CameraState> {
             this.setState({
                 cameraDevicePosition: 0
             });
+
         }
     }
-    private swapCameraId(array: string[]) {
-        for (let counter = 0; counter <= array.length; counter++) {
-            let cameraId: string;
-            cameraId = array[counter];
-            return cameraId;
+
+    private createSwitchCameraButton() {
+        if (this.availableDevices.length > 1) {
+            return createElement("button", {
+                className: "btn mx-button btn-default",
+                onClick: this.changeCamera
+            }, "Switch");
         }
-        return "";
+        return null;
     }
 
     private getStream() {
         this.videoElement = document.querySelector("video");
-        if (this.stream) {
-            this.stream.getTracks().forEach((track: any) => {
-                track.stop();
-            });
-        }
-
         const constraints = {
             audio: false,
             video: { deviceId: this.availableDevices[this.state.cameraDevicePosition] }
         };
 
-        navigator.mediaDevices.getUserMedia(constraints).then((stream: any) => {
-            this.stream = stream;
-            this.videoElement.srcObject = stream;
+        if (this.outputStream) {
+            this.outputStream.getTracks().forEach((track: MediaStreamTrack) => {
+                track.stop();
+            });
+        }
+
+        navigator.mediaDevices.getUserMedia(constraints).then((stream: MediaStream) => {
+            this.outputStream = stream;
+            if (this.videoElement) {
+                this.videoElement.srcObject = stream;
+            }
         });
     }
 }

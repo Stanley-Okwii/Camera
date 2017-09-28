@@ -1,3 +1,26 @@
 
 # Camera
-Allows users to use the web camera on their mendix applications.
+Allows users to take and save pictures on their mendix applications.
+
+## Features
+* Supports different image types:
+    * webp
+    * jpeg
+    * png
+* Supports actions:
+    * set capturing window dimensions
+    * set image properties such as height,width, 
+    * Call microflow
+* Images are saved to mendix System.Images
+
+## Dependencies
+Mendix 7.6
+
+## Demo project
+https://cameratest100.mxapps.io/
+
+## Usage
+The widget requires a context.
+ ### Entity created
+ - An entity is created with one attribute File name
+ - This entity inherits from the mendix System.Images
