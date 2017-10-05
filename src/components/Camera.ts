@@ -1,19 +1,19 @@
 import * as classNames from "classnames";
-import { Component, createElement } from "react";
+import { CSSProperties, Component, createElement } from "react";
 import * as WebCam from "react-webcam";
 
 export interface CameraProps {
     Width: number;
     Height: number;
+    widthUnit: string;
+    heightUnit: string;
     captureButtonName?: string;
     recaptureButtonName?: string;
     usePictureButtonName?: string;
-    startCameraButtonName?: string;
     fileType: string;
     filter?: string;
-    imageWidth: number;
-    imageHeight: number;
     onClickAction: ({ }) => void;
+    style?: object;
 }
 
 export interface CameraState {
@@ -30,14 +30,12 @@ export interface Webcam {
     };
 }
 
-export interface VideoElement {
-    srcObject: MediaStream;
-}
-
-export type filefomats = "jpeg" | "png" | "webp";
+export type filefomats = "jpeg" | "png" | "svg";
 
 export class Camera extends Component<CameraProps, CameraState> {
     private webcam: Webcam;
+    private resolutionWidth: string;
+    private resolutionHeight: string;
     private videoElement: HTMLVideoElement | null;
     private outputStream: MediaStream;
     private availableDevices: string[] = [];
@@ -52,6 +50,9 @@ export class Camera extends Component<CameraProps, CameraState> {
         this.setCameraReference = this.setCameraReference.bind(this);
         this.retakePicture = this.retakePicture.bind(this);
         this.getStream = this.getStream.bind(this);
+        this.setStyle = this.setStyle.bind(this);
+        this.createStyle = this.createStyle.bind(this);
+        this.getStyle = this.getStyle.bind(this);
         this.takePicture = this.takePicture.bind(this);
         this.changeCamera = this.changeCamera.bind(this);
     }
@@ -60,20 +61,21 @@ export class Camera extends Component<CameraProps, CameraState> {
         if (this.state.pictureTaken && this.state.screenshot) {
             return createElement("div", {},
                 createElement("img", {
-                    src: this.state.screenshot, style: { filter: this.props.filter },
-                    width: this.props.imageWidth,
-                    height: this.props.imageHeight,
-                    alt: "image path could not be found!"
+                    src: this.state.screenshot,
+                    style: this.getStyle(),
+                    alt: "Image path could not be found!"
                 }),
                 createElement("div", {},
-                    createElement("button", { className: "btn mx-button btn-default", onClick: this.retakePicture },
+                    createElement("button", { className: "btn btn-info active", onClick: this.retakePicture },
                         this.props.recaptureButtonName
                     ),
-                    createElement("span", {}, " "),
+                    createElement("span", {}, "  "),
                     createElement("button", {
-                        className: "btn mx-button btn-default",
-                        // tslint:disable-next-line:max-line-length
-                        onClick: () => this.props.onClickAction({ src: this.state.screenshot, id: this.state.pictureId })
+                        className: "btn btn-info active",
+                        onClick: () => this.props.onClickAction({
+                            src: this.state.screenshot,
+                            id: this.state.pictureId
+                        })
                     }, this.props.usePictureButtonName)
                 )
             );
@@ -84,16 +86,14 @@ export class Camera extends Component<CameraProps, CameraState> {
                 audio: false,
                 ref: this.setCameraReference,
                 screenshotFormat: "image/".concat(this.props.fileType),
-                height: this.props.Height,
-                width: this.props.Width,
-                style: { filter: this.props.filter }
+                style: this.createStyle()
             }),
             createElement("div", {},
                 createElement("button", {
-                    className: "btn mx-button btn-default",
+                    className: "btn btn-info active",
                     onClick: this.takePicture
                 }, this.props.captureButtonName),
-                createElement("span", {}, " "),
+                createElement("span", {}, "  "),
                 this.createSwitchCameraButton()
             )
         );
@@ -115,6 +115,7 @@ export class Camera extends Component<CameraProps, CameraState> {
             .catch((error: Error) => {
                 mx.ui.error(error.name + ": " + error.message);
             });
+        this.setStyle();
     }
 
     componentDidUpdate() {
@@ -146,18 +147,49 @@ export class Camera extends Component<CameraProps, CameraState> {
             this.setState({
                 cameraDevicePosition: 0
             });
-
         }
     }
 
     private createSwitchCameraButton() {
         if (this.availableDevices.length > 1) {
             return createElement("button", {
-                className: "btn mx-button btn-default",
+                className: "btn btn-info active",
                 onClick: this.changeCamera
             }, "Switch");
         }
         return null;
+    }
+
+    private setStyle() {
+        this.resolutionWidth = this.props.widthUnit === "percentage" ? `${this.props.Width}%` : `${this.props.Width}`;
+        if (this.props.heightUnit === "percentageOfWidth") {
+            this.resolutionHeight = `${this.props.Height}%`;
+        } else if (this.props.heightUnit === "pixels") {
+            this.resolutionHeight = `${this.props.Height}px`;
+        } else if (this.props.heightUnit === "percentageOfParent") {
+            this.resolutionHeight = `${this.props.Height}%`;
+        }
+    }
+
+    private getStyle(): object {
+        return { width: this.resolutionWidth, height: this.resolutionHeight };
+    }
+
+    private createStyle(): object {
+        const style: CSSProperties = {
+            width: this.props.widthUnit === "percentage" ? `${this.props.Width}%` : `${this.props.Width}`,
+            filter: this.props.filter
+        };
+
+        if (this.props.heightUnit === "percentageOfWidth") {
+            style.paddingBottom = `${this.props.Height}%`;
+        } else if (this.props.heightUnit === "pixels") {
+            style.paddingBottom = `${this.props.Height}px`;
+        } else if (this.props.heightUnit === "percentageOfParent") {
+            style.height = `${this.props.Height}%`;
+        }
+
+        return { ...style, ... this.props.style };
     }
 
     private getStream() {

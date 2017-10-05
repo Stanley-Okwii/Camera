@@ -1,18 +1,18 @@
-import { Component, createElement } from "react";
+import { CSSProperties, Component, createElement } from "react";
 import * as WebCam from "react-webcam";
-import { Camera, CameraState, filefomats } from "./Camera";
+import { Camera, filefomats } from "./Camera";
 
 interface WrapperProps {
     class: string;
     mxObject: mendix.lib.MxObject;
-    style: string;
+    style: object;
 }
 
 export interface ContainerProps extends WrapperProps {
     resolutionWidth: number;
+    imageHeightUnit: string;
+    imageWidthUnit: string;
     resolutionHeight: number;
-    capturingWindowWidth: number;
-    capturingWindowHeight: number;
     captureButtonName: string;
     recaptureButtonName: string;
     usePictureButtonName: string;
@@ -20,6 +20,10 @@ export interface ContainerProps extends WrapperProps {
     startCameraButtonName: string;
     imageFilter: string;
     photo: string;
+    widthUnit: string;
+    heightUnit: string;
+    width: number;
+    height: number;
 }
 
 export default class CameraContainer extends Component<ContainerProps> {
@@ -32,16 +36,15 @@ export default class CameraContainer extends Component<ContainerProps> {
 
     render() {
         return createElement(Camera, {
-            Width: this.props.capturingWindowWidth,
-            Height: this.props.capturingWindowHeight,
+            Width: this.props.width,
+            Height: this.props.height,
+            widthUnit: this.props.widthUnit,
+            heightUnit: this.props.heightUnit,
             fileType: this.props.fileType,
             usePictureButtonName: this.props.usePictureButtonName,
             captureButtonName: this.props.captureButtonName,
-            startCameraButtonName: this.props.startCameraButtonName,
             recaptureButtonName: this.props.recaptureButtonName,
             filter: this.formatStlye(),
-            imageHeight: this.props.resolutionHeight,
-            imageWidth: this.props.resolutionWidth,
             onClickAction: this.savePhoto
         });
     }
@@ -73,7 +76,7 @@ export default class CameraContainer extends Component<ContainerProps> {
             },
             entity: this.props.photo,
             error: error => {
-                mx.ui.error("Could not create object: photo:" + error);
+                mx.ui.error("Could not create object: " + error);
             }
         });
     }
@@ -91,4 +94,7 @@ export default class CameraContainer extends Component<ContainerProps> {
         return new Blob([ bufferArray ]);
     }
 
+    private setStyle() {
+        const width = this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}`;
+    }
 }
