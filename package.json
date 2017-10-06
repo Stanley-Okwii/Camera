@@ -89,6 +89,8 @@
   "dependencies": {
     "canvas-to-blob": "0.0.0",
     "classnames": "^2.2.5",
+    "file-loader": "^1.1.5",
+    "image-webpack-loader": "^3.4.2",
     "react-webcam": "^0.2.0"
   }
 }

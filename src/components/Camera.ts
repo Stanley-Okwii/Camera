@@ -14,6 +14,8 @@ export interface CameraProps {
     filter?: string;
     onClickAction: ({ }) => void;
     style?: object;
+    captureButtonIcon: ImageData;
+    switchCameraIcon: ImageData;
 }
 
 export interface CameraState {
@@ -50,9 +52,7 @@ export class Camera extends Component<CameraProps, CameraState> {
         this.setCameraReference = this.setCameraReference.bind(this);
         this.retakePicture = this.retakePicture.bind(this);
         this.getStream = this.getStream.bind(this);
-        this.setStyle = this.setStyle.bind(this);
         this.createStyle = this.createStyle.bind(this);
-        this.getStyle = this.getStyle.bind(this);
         this.takePicture = this.takePicture.bind(this);
         this.changeCamera = this.changeCamera.bind(this);
     }
@@ -62,21 +62,19 @@ export class Camera extends Component<CameraProps, CameraState> {
             return createElement("div", {},
                 createElement("img", {
                     src: this.state.screenshot,
-                    style: this.getStyle(),
+                    style: this.createStyle(),
                     alt: "Image path could not be found!"
                 }),
                 createElement("div", {},
-                    createElement("button", { className: "btn btn-info active", onClick: this.retakePicture },
-                        this.props.recaptureButtonName
-                    ),
+                    createElement("span", { className: "glyphicon glyphicon-repeat", onClick: this.retakePicture }),
                     createElement("span", {}, "  "),
-                    createElement("button", {
-                        className: "btn btn-info active",
+                    createElement("span", {
+                        className: "glyphicon glyphicon-download-alt",
                         onClick: () => this.props.onClickAction({
                             src: this.state.screenshot,
                             id: this.state.pictureId
                         })
-                    }, this.props.usePictureButtonName)
+                    })
                 )
             );
         }
@@ -92,7 +90,8 @@ export class Camera extends Component<CameraProps, CameraState> {
                 createElement("button", {
                     className: "btn btn-info active",
                     onClick: this.takePicture
-                }, this.props.captureButtonName),
+                }, createElement("img", { src: this.props.captureButtonIcon, style: {} }),
+                   this.props.captureButtonName),
                 createElement("span", {}, "  "),
                 this.createSwitchCameraButton()
             )
@@ -115,7 +114,6 @@ export class Camera extends Component<CameraProps, CameraState> {
             .catch((error: Error) => {
                 mx.ui.error(error.name + ": " + error.message);
             });
-        this.setStyle();
     }
 
     componentDidUpdate() {
@@ -155,29 +153,14 @@ export class Camera extends Component<CameraProps, CameraState> {
             return createElement("button", {
                 className: "btn btn-info active",
                 onClick: this.changeCamera
-            }, "Switch");
+            }, createElement("img", { src: this.props.switchCameraIcon, style: {} }), "Switch");
         }
         return null;
     }
 
-    private setStyle() {
-        this.resolutionWidth = this.props.widthUnit === "percentage" ? `${this.props.Width}%` : `${this.props.Width}`;
-        if (this.props.heightUnit === "percentageOfWidth") {
-            this.resolutionHeight = `${this.props.Height}%`;
-        } else if (this.props.heightUnit === "pixels") {
-            this.resolutionHeight = `${this.props.Height}px`;
-        } else if (this.props.heightUnit === "percentageOfParent") {
-            this.resolutionHeight = `${this.props.Height}%`;
-        }
-    }
-
-    private getStyle(): object {
-        return { width: this.resolutionWidth, height: this.resolutionHeight };
-    }
-
     private createStyle(): object {
         const style: CSSProperties = {
-            width: this.props.widthUnit === "percentage" ? `${this.props.Width}%` : `${this.props.Width}`,
+            width: this.props.widthUnit === "percentage" ? `${this.props.Width}%` : `${this.props.Width}px`,
             filter: this.props.filter
         };
 

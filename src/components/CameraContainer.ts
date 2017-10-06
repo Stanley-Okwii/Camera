@@ -24,6 +24,8 @@ export interface ContainerProps extends WrapperProps {
     heightUnit: string;
     width: number;
     height: number;
+    captureButtonIcon: ImageData;
+    switchCameraIcon: ImageData;
 }
 
 export default class CameraContainer extends Component<ContainerProps> {
@@ -45,7 +47,9 @@ export default class CameraContainer extends Component<ContainerProps> {
             captureButtonName: this.props.captureButtonName,
             recaptureButtonName: this.props.recaptureButtonName,
             filter: this.formatStlye(),
-            onClickAction: this.savePhoto
+            onClickAction: this.savePhoto,
+            captureButtonIcon: this.props.captureButtonIcon,
+            switchCameraIcon: this.props.switchCameraIcon
         });
     }
 

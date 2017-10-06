@@ -15,7 +15,7 @@ const widgetConfig = {
         libraryTarget: "umd"
     },
     resolve: {
-        extensions: [ ".ts", ".js", ".json" ],
+        extensions: [ ".ts", ".js", ".json", ".png" ],
         alias: {
             "tests": path.resolve(__dirname, "./tests")
         }
@@ -30,7 +30,13 @@ const widgetConfig = {
             { test: /\.scss$/, loader: ExtractTextPlugin.extract({
                 fallback: "style-loader",
                 use: "css-loader!sass-loader"
-            }) }
+            }) },
+            { test: /\.(jpe?g|png|gif|svg)$/i,
+                loaders: [
+                    'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+                    'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
+                ]
+            }
         ]
     },
     devtool: "source-map",
