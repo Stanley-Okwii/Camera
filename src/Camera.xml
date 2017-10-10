@@ -76,6 +76,11 @@
             <category>Button captions</category>
             <description>The class on the button that captures the image. This button should not have an action.</description>
         </property>
+        <property key="usePictureButtonIcon" type="image" defaultValue="">
+            <caption>Use picture button icon</caption>
+            <category>Button captions</category>
+            <description>The class on the button that captures the image. This button should not have an action.</description>
+        </property>
         <property key="recaptureButtonName" type="string" defaultValue="Retake Photo">
             <caption>Recapture button</caption>
             <category>Button captions</category>

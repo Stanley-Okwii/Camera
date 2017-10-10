@@ -9,15 +9,10 @@ interface WrapperProps {
 }
 
 export interface ContainerProps extends WrapperProps {
-    resolutionWidth: number;
-    imageHeightUnit: string;
-    imageWidthUnit: string;
-    resolutionHeight: number;
     captureButtonName: string;
     recaptureButtonName: string;
     usePictureButtonName: string;
     fileType: filefomats;
-    startCameraButtonName: string;
     imageFilter: string;
     photo: string;
     widthUnit: string;
@@ -26,6 +21,7 @@ export interface ContainerProps extends WrapperProps {
     height: number;
     captureButtonIcon: ImageData;
     switchCameraIcon: ImageData;
+    usePictureButtonIcon: ImageData;
 }
 
 export default class CameraContainer extends Component<ContainerProps> {
@@ -49,7 +45,8 @@ export default class CameraContainer extends Component<ContainerProps> {
             filter: this.formatStlye(),
             onClickAction: this.savePhoto,
             captureButtonIcon: this.props.captureButtonIcon,
-            switchCameraIcon: this.props.switchCameraIcon
+            switchCameraIcon: this.props.switchCameraIcon,
+            usePictureButtonIcon: this.props.usePictureButtonIcon
         });
     }
 

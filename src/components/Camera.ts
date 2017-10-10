@@ -1,6 +1,7 @@
 import * as classNames from "classnames";
 import { CSSProperties, Component, createElement } from "react";
 import * as WebCam from "react-webcam";
+import "../ui/Camera.css";
 
 export interface CameraProps {
     Width: number;
@@ -16,6 +17,7 @@ export interface CameraProps {
     style?: object;
     captureButtonIcon: ImageData;
     switchCameraIcon: ImageData;
+    usePictureButtonIcon: ImageData;
 }
 
 export interface CameraState {
@@ -36,8 +38,6 @@ export type filefomats = "jpeg" | "png" | "svg";
 
 export class Camera extends Component<CameraProps, CameraState> {
     private webcam: Webcam;
-    private resolutionWidth: string;
-    private resolutionHeight: string;
     private videoElement: HTMLVideoElement | null;
     private outputStream: MediaStream;
     private availableDevices: string[] = [];
@@ -59,39 +59,42 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     render() {
         if (this.state.pictureTaken && this.state.screenshot) {
-            return createElement("div", {},
+            return createElement("div", { className: "parent" },
                 createElement("img", {
                     src: this.state.screenshot,
                     style: this.createStyle(),
                     alt: "Image path could not be found!"
                 }),
-                createElement("div", {},
-                    createElement("span", { className: "glyphicon glyphicon-repeat", onClick: this.retakePicture }),
+                createElement("div", { className: "imgclass" },
+                    createElement("button", { className: "btn btn-info active", onClick: this.retakePicture },
+                        createElement("img", { src: this.props.captureButtonIcon, style: {} }),
+                         " " + this.props.captureButtonName),
                     createElement("span", {}, "  "),
-                    createElement("span", {
-                        className: "glyphicon glyphicon-download-alt",
+                    createElement("button", {
+                        className: "btn btn-info active",
                         onClick: () => this.props.onClickAction({
                             src: this.state.screenshot,
                             id: this.state.pictureId
-                        })
-                    })
+                        })},
+                         createElement("img", { src: this.props.usePictureButtonIcon, style: {} }),
+                         " " + this.props.usePictureButtonName)
                 )
             );
         }
 
-        return createElement("div", {},
+        return createElement("div", { className: "parent" },
             createElement(WebCam, {
                 audio: false,
                 ref: this.setCameraReference,
                 screenshotFormat: "image/".concat(this.props.fileType),
                 style: this.createStyle()
             }),
-            createElement("div", {},
+            createElement("div", { className: "imgclass" },
                 createElement("button", {
                     className: "btn btn-info active",
                     onClick: this.takePicture
                 }, createElement("img", { src: this.props.captureButtonIcon, style: {} }),
-                   this.props.captureButtonName),
+                   " " + this.props.captureButtonName),
                 createElement("span", {}, "  "),
                 this.createSwitchCameraButton()
             )
@@ -153,7 +156,7 @@ export class Camera extends Component<CameraProps, CameraState> {
             return createElement("button", {
                 className: "btn btn-info active",
                 onClick: this.changeCamera
-            }, createElement("img", { src: this.props.switchCameraIcon, style: {} }), "Switch");
+            }, createElement("img", { src: this.props.switchCameraIcon, style: {} }), " Switch");
         }
         return null;
     }
@@ -171,7 +174,6 @@ export class Camera extends Component<CameraProps, CameraState> {
         } else if (this.props.heightUnit === "percentageOfParent") {
             style.height = `${this.props.Height}%`;
         }
-
         return { ...style, ... this.props.style };
     }
 

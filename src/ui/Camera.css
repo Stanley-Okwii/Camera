@@ -1,0 +1,23 @@
+div.imgclass{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    top:0;
+    left:0;
+    cursor: pointer;
+    vertical-align:middle;
+    overflow:hidden;
+    margin: 0 auto;
+}
+button.btn.s:active{
+    width: 100%;
+    height: 100%;
+    padding: 4px 8px;
+}
+div.parent{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+}
