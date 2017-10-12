@@ -8,16 +8,17 @@ export interface CameraProps {
     Height: number;
     widthUnit: string;
     heightUnit: string;
-    captureButtonName?: string;
-    recaptureButtonName?: string;
-    usePictureButtonName?: string;
+    captureButtonName: string;
+    recaptureButtonName: string;
+    usePictureButtonName: string;
     fileType: string;
     filter?: string;
     onClickAction: ({ }) => void;
     style?: object;
-    captureButtonIcon: ImageData;
-    switchCameraIcon: ImageData;
-    usePictureButtonIcon: ImageData;
+    captureButtonIcon: string;
+    switchCameraIcon: string;
+    usePictureButtonIcon: string;
+    captionsToUse: string;
 }
 
 export interface CameraState {
@@ -55,6 +56,7 @@ export class Camera extends Component<CameraProps, CameraState> {
         this.createStyle = this.createStyle.bind(this);
         this.takePicture = this.takePicture.bind(this);
         this.changeCamera = this.changeCamera.bind(this);
+        this.createIcons = this.createIcons.bind(this);
     }
 
     render() {
@@ -65,19 +67,16 @@ export class Camera extends Component<CameraProps, CameraState> {
                     style: this.createStyle(),
                     alt: "Image path could not be found!"
                 }),
-                createElement("div", { className: "imgclass" },
-                    createElement("button", { className: "btn btn-info active", onClick: this.retakePicture },
-                        createElement("img", { src: this.props.captureButtonIcon, style: {} }),
-                         " " + this.props.captureButtonName),
-                    createElement("span", {}, "  "),
-                    createElement("button", {
-                        className: "btn btn-info active",
-                        onClick: () => this.props.onClickAction({
-                            src: this.state.screenshot,
-                            id: this.state.pictureId
-                        })},
-                         createElement("img", { src: this.props.usePictureButtonIcon, style: {} }),
-                         " " + this.props.usePictureButtonName)
+                createElement("span", { className: "buttonContainer1", onClick: this.retakePicture },
+                this.createIcons(this.props.captureButtonName, "glyphicon glyphicon-" + this.props.captureButtonIcon)),
+                createElement("span", {
+                    className: "buttonContainer2",
+                    onClick: () => this.props.onClickAction({
+                        src: this.state.screenshot,
+                        id: this.state.pictureId
+                    })
+                }, this.createIcons(this.props.usePictureButtonName,
+                    "glyphicon glyphicon-" + this.props.usePictureButtonIcon)
                 )
             );
         }
@@ -89,15 +88,12 @@ export class Camera extends Component<CameraProps, CameraState> {
                 screenshotFormat: "image/".concat(this.props.fileType),
                 style: this.createStyle()
             }),
-            createElement("div", { className: "imgclass" },
-                createElement("button", {
-                    className: "btn btn-info active",
-                    onClick: this.takePicture
-                }, createElement("img", { src: this.props.captureButtonIcon, style: {} }),
-                   " " + this.props.captureButtonName),
-                createElement("span", {}, "  "),
-                this.createSwitchCameraButton()
-            )
+            createElement("span", {
+                className: "buttonContainer",
+                onClick: this.takePicture
+            }, this.createIcons(this.props.captureButtonName, "glyphicon glyphicon-" + this.props.captureButtonIcon)),
+            this.createSwitchCameraButton()
+
         );
     }
 
@@ -153,12 +149,21 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     private createSwitchCameraButton() {
         if (this.availableDevices.length > 1) {
-            return createElement("button", {
-                className: "btn btn-info active",
-                onClick: this.changeCamera
-            }, createElement("img", { src: this.props.switchCameraIcon, style: {} }), " Switch");
+            return createElement("span",
+                {
+                    className: "buttonSwitch",
+                    onClick: this.changeCamera
+                },
+                this.createIcons(" Switch", "glyphicon glyphicon-" + this.props.switchCameraIcon)
+            );
         }
         return null;
+    }
+
+    private createIcons(buttonLabel: string, styleName: string) {
+        return this.props.captionsToUse === "icons"
+        ? createElement("span", { className: styleName })
+        : createElement("button", { className: "btn btn-info active" }, buttonLabel);
     }
 
     private createStyle(): object {

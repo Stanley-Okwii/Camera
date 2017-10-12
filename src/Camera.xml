@@ -66,17 +66,17 @@
             <category>Button captions</category>
             <description>The class on the button that captures the image. This button should not have an action.</description>
         </property>
-        <property key="captureButtonIcon" type="image" defaultValue="">
+        <property key="captureButtonIcon" type="string" defaultValue="">
             <caption>Capture button icon</caption>
             <category>Button captions</category>
             <description>The class on the button that captures the image. This button should not have an action.</description>
         </property>
-        <property key="switchCameraIcon" type="image" defaultValue="">
+        <property key="switchCameraIcon" type="string" defaultValue="">
             <caption>Switch camera button icon</caption>
             <category>Button captions</category>
             <description>The class on the button that captures the image. This button should not have an action.</description>
         </property>
-        <property key="usePictureButtonIcon" type="image" defaultValue="">
+        <property key="usePictureButtonIcon" type="string" defaultValue="">
             <caption>Use picture button icon</caption>
             <category>Button captions</category>
             <description>The class on the button that captures the image. This button should not have an action.</description>
@@ -91,13 +91,14 @@
             <category>Button captions</category>
             <description>The class on the button that acts as the OK/save/submit button. This button is hidden in capture mode.</description>
         </property>
-        <property key="errorMessage" type="translatableString">
-            <caption>Error message</caption>
-            <category>Error handling</category>
-            <description>The message to show when the camera cannot be accessed in the current browser.</description>
-            <translations>
-                <translation lang="en_US">Something went wrong. Make sure you give access to the camera and/or try another browser. Google Chrome is recommended.</translation>
-            </translations>
+        <property key="captionsToUse" type="enumeration" defaultValue="icons">
+            <caption>Labels to use for the buttons</caption>
+            <category>Button captions</category>
+            <description>Select the type of labels for the buttons </description>
+            <enumerationValues>
+                <enumerationValue key="icons">Icons</enumerationValue>
+                <enumerationValue key="buttonNames">Button names</enumerationValue>
+            </enumerationValues>
         </property>
     </properties>
 </widget>
