@@ -10,8 +10,8 @@ Allows users to take and save pictures on their mendix applications.
 * Supports actions:
     * set capturing window dimensions
     * set image properties such as height,width, 
-    * Call microflow
-* Images are saved to mendix System.Images
+    * call microflow // Use a microflow to save the image.
+* Images 
 
 ## Dependencies
 Mendix 7.6

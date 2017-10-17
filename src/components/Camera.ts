@@ -1,6 +1,7 @@
 import * as classNames from "classnames";
 import { CSSProperties, Component, createElement } from "react";
 import * as WebCam from "react-webcam";
+import { findDOMNode } from "react-dom";
 import "../ui/Camera.css";
 
 export interface CameraProps {
@@ -12,7 +13,7 @@ export interface CameraProps {
     recaptureButtonName: string;
     usePictureButtonName: string;
     fileType: string;
-    filter?: string;
+    filter: string;
     onClickAction: ({ }) => void;
     style?: object;
     captureButtonIcon: string;
@@ -25,7 +26,7 @@ export interface CameraState {
     screenshot: string;
     pictureTaken: boolean;
     cameraDevicePosition: number;
-    pictureId?: string;
+    pictureId: string;
 }
 
 export interface Webcam {
@@ -68,7 +69,8 @@ export class Camera extends Component<CameraProps, CameraState> {
                     alt: "Image path could not be found!"
                 }),
                 createElement("span", { className: "buttonContainer1", onClick: this.retakePicture },
-                this.createIcons(this.props.captureButtonName, "glyphicon glyphicon-" + this.props.captureButtonIcon)),
+                    this.createIcons(this.props.captureButtonName,
+                     `glyphicon glyphicon-${this.props.captureButtonIcon}`)),
                 createElement("span", {
                     className: "buttonContainer2",
                     onClick: () => this.props.onClickAction({
@@ -76,7 +78,7 @@ export class Camera extends Component<CameraProps, CameraState> {
                         id: this.state.pictureId
                     })
                 }, this.createIcons(this.props.usePictureButtonName,
-                    "glyphicon glyphicon-" + this.props.usePictureButtonIcon)
+                    `glyphicon glyphicon-${this.props.usePictureButtonIcon}`)
                 )
             );
         }
@@ -85,13 +87,13 @@ export class Camera extends Component<CameraProps, CameraState> {
             createElement(WebCam, {
                 audio: false,
                 ref: this.setCameraReference,
-                screenshotFormat: "image/".concat(this.props.fileType),
+                screenshotFormat: `image/${this.props.fileType}`,
                 style: this.createStyle()
             }),
             createElement("span", {
                 className: "buttonContainer",
                 onClick: this.takePicture
-            }, this.createIcons(this.props.captureButtonName, "glyphicon glyphicon-" + this.props.captureButtonIcon)),
+            }, this.createIcons(this.props.captureButtonName, `glyphicon glyphicon-${this.props.captureButtonIcon}`)),
             this.createSwitchCameraButton()
 
         );
@@ -100,15 +102,11 @@ export class Camera extends Component<CameraProps, CameraState> {
     componentWillMount() {
         navigator.mediaDevices.enumerateDevices()
             .then((devices: {}[]) => {
-                devices.forEach((device: { kind: string, deviceId: string }) => {
+                devices.filter((device: { kind: string, deviceId: string }) => {
                     if (device.kind === "videoinput") {
                         this.availableDevices.push(device.deviceId);
                     }
                 });
-                if (this.availableDevices.length >= 1) {
-                    this.setState({ cameraDevicePosition: this.availableDevices.length - 1 });
-                    this.getStream();
-                }
             })
             .catch((error: Error) => {
                 mx.ui.error(error.name + ": " + error.message);
@@ -127,7 +125,7 @@ export class Camera extends Component<CameraProps, CameraState> {
         this.setState({
             screenshot: this.webcam.getScreenshot(),
             pictureTaken: true,
-            pictureId: this.webcam.stream.id.concat("." + this.props.fileType)
+            pictureId: this.webcam.stream.id + `.${this.props.fileType}`
         });
     }
 
@@ -136,15 +134,10 @@ export class Camera extends Component<CameraProps, CameraState> {
     }
 
     private changeCamera() {
-        if ((this.state.cameraDevicePosition) < (this.availableDevices.length - 1)) {
-            this.setState({
-                cameraDevicePosition: this.state.cameraDevicePosition + 1
-            });
-        } else {
-            this.setState({
-                cameraDevicePosition: 0
-            });
-        }
+        const cameraDevicePosition = this.state.cameraDevicePosition < (this.availableDevices.length - 1)
+            ? this.state.cameraDevicePosition + 1
+            : 0;
+        this.setState({ cameraDevicePosition });
     }
 
     private createSwitchCameraButton() {
@@ -161,11 +154,10 @@ export class Camera extends Component<CameraProps, CameraState> {
     }
 
     private createIcons(buttonLabel: string, styleName: string) {
-        return this.props.captionsToUse === "icons"
+        return (this.props.captionsToUse === "icons")
         ? createElement("span", { className: styleName })
         : createElement("button", { className: "btn btn-info active" }, buttonLabel);
     }
-
     private createStyle(): object {
         const style: CSSProperties = {
             width: this.props.widthUnit === "percentage" ? `${this.props.Width}%` : `${this.props.Width}px`,
@@ -183,7 +175,7 @@ export class Camera extends Component<CameraProps, CameraState> {
     }
 
     private getStream() {
-        this.videoElement = document.querySelector("video");
+        this.videoElement = findDOMNode(this).firstChild as HTMLVideoElement;
         const constraints = {
             audio: false,
             video: { deviceId: this.availableDevices[this.state.cameraDevicePosition] }

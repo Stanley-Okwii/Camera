@@ -17,7 +17,7 @@
         </property>
          <property key="width" type="integer" defaultValue="100">
             <caption>Max resolution width</caption>
-            <category>Capturing window</category>
+            <category>window</category>
             <description/>
         </property>
         <property key="heightUnit" type="enumeration" defaultValue="percentageOfWidth">

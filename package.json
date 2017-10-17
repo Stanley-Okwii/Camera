@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.0",
-    "@types/core-js": "0.9.36",
+    "@types/core-js": "^0.9.36",
     "@types/enzyme": "^2.8.4",
     "@types/jasmine": "^2.5.47",
     "@types/karma": "^0.13.35",
@@ -44,7 +44,7 @@
     "babel-preset-react": "^6.22.0",
     "babel-preset-stage-0": "^6.22.0",
     "copy-webpack-plugin": "^4.0.1",
-    "css-loader": "^0.28.1",
+    "css-loader": "^0.28.7",
     "enzyme": "^2.7.1",
     "extract-text-webpack-plugin": "^3.0.0",
     "grunt": "1.0.1",
@@ -75,7 +75,7 @@
     "react-addons-test-utils": "^15.4.2",
     "react-dom": "^15.4.2",
     "remap-istanbul": "^0.9.0",
-    "sass-loader": "^6.0.5",
+    "sass-loader": "^6.0.6",
     "source-map-loader": "^0.2.0",
     "style-loader": "^0.18.2",
     "ts-loader": "^2.3.2",
@@ -87,10 +87,9 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "canvas-to-blob": "0.0.0",
     "classnames": "^2.2.5",
-    "file-loader": "^1.1.5",
-    "image-webpack-loader": "^3.4.2",
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2",
     "react-webcam": "^0.2.0"
   }
 }

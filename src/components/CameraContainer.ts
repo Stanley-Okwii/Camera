@@ -98,6 +98,6 @@ export default class CameraContainer extends Component<ContainerProps> {
     }
 
     private setStyle() {
-        const width = this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}`;
+        const width = this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}px`;
     }
 }
