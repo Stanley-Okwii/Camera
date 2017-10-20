@@ -14,12 +14,13 @@ export interface CameraProps {
     usePictureButtonName: string;
     fileType: string;
     filter: string;
-    onClickAction: ({ }) => void;
+    onClickAction: ({ }, microflowName: string) => void;
     style?: object;
     captureButtonIcon: string;
     switchCameraIcon: string;
     usePictureButtonIcon: string;
     captionsToUse: string;
+    saveImage: string;
 }
 
 export interface CameraState {
@@ -76,7 +77,7 @@ export class Camera extends Component<CameraProps, CameraState> {
                     onClick: () => this.props.onClickAction({
                         src: this.state.screenshot,
                         id: this.state.pictureId
-                    })
+                    }, this.props.saveImage)
                 }, this.createIcons(this.props.usePictureButtonName,
                     `glyphicon glyphicon-${this.props.usePictureButtonIcon}`)
                 )
@@ -125,7 +126,7 @@ export class Camera extends Component<CameraProps, CameraState> {
         this.setState({
             screenshot: this.webcam.getScreenshot(),
             pictureTaken: true,
-            pictureId: this.webcam.stream.id + `.${this.props.fileType}`
+            pictureId: `${this.webcam.stream.id}.${this.props.fileType}`
         });
     }
 
@@ -147,7 +148,7 @@ export class Camera extends Component<CameraProps, CameraState> {
                     className: "buttonSwitch",
                     onClick: this.changeCamera
                 },
-                this.createIcons(" Switch", "glyphicon glyphicon-" + this.props.switchCameraIcon)
+                this.createIcons(" Switch", `glyphicon glyphicon-${this.props.switchCameraIcon}`)
             );
         }
         return null;

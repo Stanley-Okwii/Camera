@@ -61,6 +61,28 @@
             <category>Image</category>
             <description>This is the entity property</description>
         </property>
+        <property key="saveImage" type="microflow" required="true" defaultValue="" entityProperty="photo">
+            <caption>Save photo microflow</caption>
+            <category>Image</category>
+            <description>Select a microflow to save the image captured.</description>
+            <returnType type="String" />
+        </property>
+        <property key="Contents" type="attribute" required="true" entityProperty="photo">
+            <caption>Binary content Attribute</caption>
+            <category>Image</category>
+            <description>Select attribute to store contents.</description>
+            <attributeTypes>
+               <attributeType name="Binary" />
+            </attributeTypes>
+        </property>
+        <property key="Name" type="attribute" required="true"  entityProperty="photo">
+            <caption>Name content Attribute</caption>
+            <category>Image</category>
+            <description>Select attribute to store contents.</description>
+            <attributeTypes>
+               <attributeType name="String" />
+            </attributeTypes>
+        </property>
         <property key="captureButtonName" type="string" defaultValue="Take Photo">
             <caption>Capture button</caption>
             <category>Button captions</category>

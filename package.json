@@ -87,6 +87,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
+    "base64-img": "^1.0.3",
     "classnames": "^2.2.5",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",

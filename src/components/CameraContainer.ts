@@ -1,5 +1,5 @@
 import { CSSProperties, Component, createElement } from "react";
-import * as WebCam from "react-webcam";
+// import { Base64_img } from "base64-img";
 import { Camera, filefomats } from "./Camera";
 
 interface WrapperProps {
@@ -12,6 +12,7 @@ export interface ContainerProps extends WrapperProps {
     captureButtonName: string;
     recaptureButtonName: string;
     usePictureButtonName: string;
+    saveImage: string;
     fileType: filefomats;
     imageFilter: string;
     photo: string;
@@ -23,12 +24,15 @@ export interface ContainerProps extends WrapperProps {
     switchCameraIcon: string;
     usePictureButtonIcon: string;
     captionsToUse: string;
+    Name: string;
+    Contents: string;
 }
 
 export default class CameraContainer extends Component<ContainerProps> {
     constructor(props: ContainerProps) {
         super(props);
         this.formatStlye = this.formatStlye.bind(this);
+        this.executeMicroflow = this.executeMicroflow.bind(this);
         this.savePhoto = this.savePhoto.bind(this);
         this.base64toBlob = this.base64toBlob.bind(this);
     }
@@ -43,8 +47,9 @@ export default class CameraContainer extends Component<ContainerProps> {
             usePictureButtonName: this.props.usePictureButtonName,
             captureButtonName: this.props.captureButtonName,
             recaptureButtonName: this.props.recaptureButtonName,
+            saveImage: this.props.saveImage,
             filter: this.formatStlye(),
-            onClickAction: this.savePhoto,
+            onClickAction: this.executeMicroflow,
             captureButtonIcon: this.props.captureButtonIcon,
             switchCameraIcon: this.props.switchCameraIcon,
             usePictureButtonIcon: this.props.usePictureButtonIcon,
@@ -84,6 +89,33 @@ export default class CameraContainer extends Component<ContainerProps> {
         });
     }
 
+    private executeMicroflow(image: { src: string, id: string }, microflow: string) {
+        mx.data.create({
+            callback: (object) => {
+                const reader = new FileReader();
+                const datatouse = reader.readAsBinaryString(this.base64toBlob(image.src));
+                 // const data = Base64_img.img(image.src, "", 2);
+                object.set(this.props.Contents, reader.readAsDataURL(this.base64toBlob(image.src)));
+                // tslint:disable-next-line:no-console
+                console.log("data");
+                object.set(this.props.Name, image.id);
+                window.mx.ui.action(microflow, {
+                    error: (error) => {
+                        window.mx.ui.error(`Error while executing microflow ${microflow}: ${error.message}`);
+                    },
+                    params: {
+                        applyto: "selection",
+                        guids: [ object.getGuid() ]
+                    }
+                }, this);
+            },
+            entity: this.props.photo,
+            error: error => {
+                mx.ui.error("Could not create object: " + error);
+            }
+        });
+    }
+
     private base64toBlob(base64Uri: string, callback?: () => void): Blob {
         const byteString = atob(base64Uri.split(",")[1]);
         const mimeString = base64Uri.split(",")[0].split(":")[1].split(";")[0];
@@ -95,9 +127,5 @@ export default class CameraContainer extends Component<ContainerProps> {
         }
 
         return new Blob([ bufferArray ]);
-    }
-
-    private setStyle() {
-        const width = this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}px`;
     }
 }
