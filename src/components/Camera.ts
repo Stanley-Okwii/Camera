@@ -5,8 +5,8 @@ import { findDOMNode } from "react-dom";
 import "../ui/Camera.css";
 
 export interface CameraProps {
-    Width: number;
-    Height: number;
+    width: number;
+    height: number;
     widthUnit: string;
     heightUnit: string;
     captureButtonName: string;
@@ -63,17 +63,17 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     render() {
         if (this.state.pictureTaken && this.state.screenshot) {
-            return createElement("div", { className: "parent" },
+            return createElement("div", { className: classNames("parent") },
                 createElement("img", {
                     src: this.state.screenshot,
                     style: this.createStyle(),
                     alt: "Image path could not be found!"
                 }),
-                createElement("span", { className: "buttonContainer1", onClick: this.retakePicture },
+                createElement("span", { className: classNames("buttonContainer1"), onClick: this.retakePicture },
                     this.createIcons(this.props.captureButtonName,
                      `glyphicon glyphicon-${this.props.captureButtonIcon}`)),
                 createElement("span", {
-                    className: "buttonContainer2",
+                    className: classNames("picture-class"),
                     onClick: () => this.props.onClickAction({
                         src: this.state.screenshot,
                         id: this.state.pictureId
@@ -84,7 +84,7 @@ export class Camera extends Component<CameraProps, CameraState> {
             );
         }
 
-        return createElement("div", { className: "parent" },
+        return createElement("div", { className: classNames("parent") },
             createElement(WebCam, {
                 audio: false,
                 ref: this.setCameraReference,
@@ -92,7 +92,7 @@ export class Camera extends Component<CameraProps, CameraState> {
                 style: this.createStyle()
             }),
             createElement("span", {
-                className: "buttonContainer",
+                className: classNames("buttonContainer"),
                 onClick: this.takePicture
             }, this.createIcons(this.props.captureButtonName, `glyphicon glyphicon-${this.props.captureButtonIcon}`)),
             this.createSwitchCameraButton()
@@ -110,7 +110,7 @@ export class Camera extends Component<CameraProps, CameraState> {
                 });
             })
             .catch((error: Error) => {
-                mx.ui.error(error.name + ": " + error.message);
+                mx.ui.error(`${error.name}: ${error.message}`);
             });
     }
 
@@ -145,7 +145,7 @@ export class Camera extends Component<CameraProps, CameraState> {
         if (this.availableDevices.length > 1) {
             return createElement("span",
                 {
-                    className: "buttonSwitch",
+                    className: classNames("buttonSwitch"),
                     onClick: this.changeCamera
                 },
                 this.createIcons(" Switch", `glyphicon glyphicon-${this.props.switchCameraIcon}`)
@@ -156,21 +156,21 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     private createIcons(buttonLabel: string, styleName: string) {
         return (this.props.captionsToUse === "icons")
-        ? createElement("span", { className: styleName })
-        : createElement("button", { className: "btn btn-info active" }, buttonLabel);
+        ? createElement("span", { className: classNames(styleName) })
+        : createElement("button", { className:  classNames("btn btn-info active") }, buttonLabel);
     }
     private createStyle(): object {
         const style: CSSProperties = {
-            width: this.props.widthUnit === "percentage" ? `${this.props.Width}%` : `${this.props.Width}px`,
+            width: this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}px`,
             filter: this.props.filter
         };
 
         if (this.props.heightUnit === "percentageOfWidth") {
-            style.paddingBottom = `${this.props.Height}%`;
+            style.paddingBottom = `${this.props.height}%`;
         } else if (this.props.heightUnit === "pixels") {
-            style.paddingBottom = `${this.props.Height}px`;
+            style.paddingBottom = `${this.props.height}px`;
         } else if (this.props.heightUnit === "percentageOfParent") {
-            style.height = `${this.props.Height}%`;
+            style.height = `${this.props.height}%`;
         }
         return { ...style, ... this.props.style };
     }

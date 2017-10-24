@@ -17,7 +17,7 @@
         </property>
          <property key="width" type="integer" defaultValue="100">
             <caption>Max resolution width</caption>
-            <category>window</category>
+            <category>Capturing window</category>
             <description/>
         </property>
         <property key="heightUnit" type="enumeration" defaultValue="percentageOfWidth">
@@ -46,7 +46,7 @@
             </enumerationValues>
         </property>
         <property key="imageFilter" type="enumeration" defaultValue="none">
-            <caption>File filter</caption>
+            <caption>Image filter</caption>
             <category>Image</category>
              <description>Filter to be applied to the image</description>
             <enumerationValues>
@@ -67,7 +67,7 @@
             <description>Select a microflow to save the image captured.</description>
             <returnType type="String" />
         </property>
-        <property key="Contents" type="attribute" required="true" entityProperty="photo">
+        <property key="contents" type="attribute" required="true" entityProperty="photo">
             <caption>Binary content Attribute</caption>
             <category>Image</category>
             <description>Select attribute to store contents.</description>
@@ -75,7 +75,7 @@
                <attributeType name="Binary" />
             </attributeTypes>
         </property>
-        <property key="Name" type="attribute" required="true"  entityProperty="photo">
+        <property key="name" type="attribute" required="true"  entityProperty="photo">
             <caption>Name content Attribute</caption>
             <category>Image</category>
             <description>Select attribute to store contents.</description>
@@ -89,17 +89,17 @@
             <description>The class on the button that captures the image. This button should not have an action.</description>
         </property>
         <property key="captureButtonIcon" type="string" defaultValue="">
-            <caption>Capture button icon</caption>
+            <caption>Capture icon</caption>
             <category>Button captions</category>
             <description>The class on the button that captures the image. This button should not have an action.</description>
         </property>
         <property key="switchCameraIcon" type="string" defaultValue="">
-            <caption>Switch camera button icon</caption>
+            <caption>Switch camera icon</caption>
             <category>Button captions</category>
             <description>The class on the button that captures the image. This button should not have an action.</description>
         </property>
         <property key="usePictureButtonIcon" type="string" defaultValue="">
-            <caption>Use picture button icon</caption>
+            <caption>Use picture icon</caption>
             <category>Button captions</category>
             <description>The class on the button that captures the image. This button should not have an action.</description>
         </property>
@@ -114,12 +114,12 @@
             <description>The class on the button that acts as the OK/save/submit button. This button is hidden in capture mode.</description>
         </property>
         <property key="captionsToUse" type="enumeration" defaultValue="icons">
-            <caption>Labels to use for the buttons</caption>
+            <caption>Label to use</caption>
             <category>Button captions</category>
             <description>Select the type of labels for the buttons </description>
             <enumerationValues>
                 <enumerationValue key="icons">Icons</enumerationValue>
-                <enumerationValue key="buttonNames">Button names</enumerationValue>
+                <enumerationValue key="buttonNames">Buttons</enumerationValue>
             </enumerationValues>
         </property>
     </properties>

@@ -1,5 +1,4 @@
-import { CSSProperties, Component, createElement } from "react";
-// import { Base64_img } from "base64-img";
+import { CElement , Component, createElement } from "react";
 import { Camera, filefomats } from "./Camera";
 
 interface WrapperProps {
@@ -24,11 +23,12 @@ export interface ContainerProps extends WrapperProps {
     switchCameraIcon: string;
     usePictureButtonIcon: string;
     captionsToUse: string;
-    Name: string;
-    Contents: string;
+    name: string;
+    contents: string;
 }
 
 export default class CameraContainer extends Component<ContainerProps> {
+    private base64: string;
     constructor(props: ContainerProps) {
         super(props);
         this.formatStlye = this.formatStlye.bind(this);
@@ -39,8 +39,8 @@ export default class CameraContainer extends Component<ContainerProps> {
 
     render() {
         return createElement(Camera, {
-            Width: this.props.width,
-            Height: this.props.height,
+            width: this.props.width,
+            height: this.props.height,
             widthUnit: this.props.widthUnit,
             heightUnit: this.props.heightUnit,
             fileType: this.props.fileType,
@@ -49,7 +49,7 @@ export default class CameraContainer extends Component<ContainerProps> {
             recaptureButtonName: this.props.recaptureButtonName,
             saveImage: this.props.saveImage,
             filter: this.formatStlye(),
-            onClickAction: this.executeMicroflow,
+            onClickAction: this.savePhoto,
             captureButtonIcon: this.props.captureButtonIcon,
             switchCameraIcon: this.props.switchCameraIcon,
             usePictureButtonIcon: this.props.usePictureButtonIcon,
@@ -81,10 +81,14 @@ export default class CameraContainer extends Component<ContainerProps> {
                     () => { mx.ui.info("Photo saved!", false); },
                     error => { mx.ui.error(error.message, false); }
                 );
+                mx.data.update({
+                    guid: object.getGuid(),
+                    entity: this.props.photo
+                });
             },
             entity: this.props.photo,
             error: error => {
-                mx.ui.error("Could not create object: " + error);
+                mx.ui.error(`Could not create object: ${error}`);
             }
         });
     }
@@ -93,12 +97,12 @@ export default class CameraContainer extends Component<ContainerProps> {
         mx.data.create({
             callback: (object) => {
                 const reader = new FileReader();
-                const datatouse = reader.readAsBinaryString(this.base64toBlob(image.src));
-                 // const data = Base64_img.img(image.src, "", 2);
-                object.set(this.props.Contents, reader.readAsDataURL(this.base64toBlob(image.src)));
-                // tslint:disable-next-line:no-console
-                console.log("data");
-                object.set(this.props.Name, image.id);
+                reader.onloadend = (e) => {
+                    this.base64 = reader.result;
+                };
+                reader.readAsBinaryString(this.base64toBlob(image.src));
+                object.set(this.props.contents, this.base64);
+                object.set(this.props.name, image.id);
                 window.mx.ui.action(microflow, {
                     error: (error) => {
                         window.mx.ui.error(`Error while executing microflow ${microflow}: ${error.message}`);
@@ -111,7 +115,7 @@ export default class CameraContainer extends Component<ContainerProps> {
             },
             entity: this.props.photo,
             error: error => {
-                mx.ui.error("Could not create object: " + error);
+                mx.ui.error(`Could not create object: ${error}`);
             }
         });
     }
