@@ -1,18 +1,18 @@
-import { CElement , Component, createElement } from "react";
-import { Camera, filefomats } from "./Camera";
+import { CElement, Component, createElement } from "react";
+
+import { Camera, CameraProps, fileFormats } from "./Camera";
 
 interface WrapperProps {
-    class: string;
+    class?: string;
     mxObject: mendix.lib.MxObject;
-    style: object;
+    style?: object;
 }
 
-export interface ContainerProps extends WrapperProps {
+export interface ModellerProps extends WrapperProps {
     captureButtonName: string;
     recaptureButtonName: string;
     usePictureButtonName: string;
-    saveImage: string;
-    fileType: filefomats;
+    fileType: fileFormats;
     imageFilter: string;
     photo: string;
     widthUnit: string;
@@ -27,10 +27,18 @@ export interface ContainerProps extends WrapperProps {
     contents: string;
 }
 
+export interface ContainerProps extends ModellerProps {
+    saveImage: string;
+    filter: string;
+    onClickAction: () => {};
+ }
+
 export default class CameraContainer extends Component<ContainerProps> {
     private base64: string;
+
     constructor(props: ContainerProps) {
         super(props);
+
         this.formatStlye = this.formatStlye.bind(this);
         this.executeMicroflow = this.executeMicroflow.bind(this);
         this.savePhoto = this.savePhoto.bind(this);
@@ -38,23 +46,16 @@ export default class CameraContainer extends Component<ContainerProps> {
     }
 
     render() {
-        return createElement(Camera, {
-            width: this.props.width,
-            height: this.props.height,
-            widthUnit: this.props.widthUnit,
-            heightUnit: this.props.heightUnit,
-            fileType: this.props.fileType,
-            usePictureButtonName: this.props.usePictureButtonName,
-            captureButtonName: this.props.captureButtonName,
-            recaptureButtonName: this.props.recaptureButtonName,
+        return createElement(Camera, this.passProps());
+    }
+
+    private passProps() {
+        return {
+            ...this.props,
             saveImage: this.props.saveImage,
             filter: this.formatStlye(),
-            onClickAction: this.savePhoto,
-            captureButtonIcon: this.props.captureButtonIcon,
-            switchCameraIcon: this.props.switchCameraIcon,
-            usePictureButtonIcon: this.props.usePictureButtonIcon,
-            captionsToUse: this.props.captionsToUse
-        });
+            onClickAction: this.savePhoto
+        };
     }
 
     private formatStlye(): string {
@@ -67,42 +68,50 @@ export default class CameraContainer extends Component<ContainerProps> {
         if (this.props.imageFilter === "sepia") {
             return "sepia(1)";
         }
+
         return "none";
     }
 
-    private savePhoto(image: { src: string, id: string }) {
-        mx.data.create({
-            callback: (object) => {
-                mx.data.saveDocument(
-                    object.getGuid(),
-                    image.id,
-                    {},
-                    this.base64toBlob(image.src),
-                    () => { mx.ui.info("Photo saved!", false); },
-                    error => { mx.ui.error(error.message, false); }
-                );
-                mx.data.update({
-                    guid: object.getGuid(),
-                    entity: this.props.photo
-                });
-            },
-            entity: this.props.photo,
-            error: error => {
-                mx.ui.error(`Could not create object: ${error}`);
-            }
-        });
+    private savePhoto(image: { src: string, id: string }, microflow: string) {
+        if (this.props.mxObject.inheritsFrom("System.Image")) {
+            mx.data.saveDocument(
+                this.props.mxObject.getGuid(),
+                image.id,
+                {},
+                this.base64toBlob(image.src),
+                () => {
+                    mx.ui.info("Image has been saved", false);
+                    if (microflow) {
+                    window.mx.ui.action(microflow, {
+                        error: (error) => {
+                            window.mx.ui.error(`Error while executing microflow ${microflow}: ${error.message}`);
+                        },
+                        params: {
+                            applyto: "selection",
+                            guids: [ this.props.mxObject.getGuid() ]
+                        }
+                    }, this);
+                }
+                },
+                error => { mx.ui.error(error.message, false); }
+            );
+        } else {
+            mx.ui.error("The entity does not inherit from System Image", false);
+        }
     }
 
     private executeMicroflow(image: { src: string, id: string }, microflow: string) {
         mx.data.create({
             callback: (object) => {
                 const reader = new FileReader();
-                reader.onloadend = (e) => {
+
+                reader.onloadend = (progressEvent: ProgressEvent) => {
                     this.base64 = reader.result;
                 };
                 reader.readAsBinaryString(this.base64toBlob(image.src));
                 object.set(this.props.contents, this.base64);
                 object.set(this.props.name, image.id);
+
                 window.mx.ui.action(microflow, {
                     error: (error) => {
                         window.mx.ui.error(`Error while executing microflow ${microflow}: ${error.message}`);

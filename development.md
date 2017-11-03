@@ -18,9 +18,9 @@
 
  To automatically compile, bundle and push code changes to the running test project, run:
    > grunt
+
  To run the project unit tests with code coverage, results can be found at dist/testresults/coverage/index.html, run:
    > npm test
+
 or run the test continuously during development:
   > karma start
- 
- 

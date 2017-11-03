@@ -8,7 +8,7 @@
     <properties>
     <property key="widthUnit" type="enumeration" defaultValue="percentage">
             <caption>Width unit</caption>
-            <category>Capturing window</category>
+            <category>Appearance</category>
             <description/>
             <enumerationValues>
                 <enumerationValue key="percentage">Percentage</enumerationValue>
@@ -17,12 +17,12 @@
         </property>
          <property key="width" type="integer" defaultValue="100">
             <caption>Max resolution width</caption>
-            <category>Capturing window</category>
+            <category>Appearance</category>
             <description/>
         </property>
         <property key="heightUnit" type="enumeration" defaultValue="percentageOfWidth">
             <caption>Height unit</caption>
-            <category>Capturing window</category>
+            <category>Appearance</category>
             <description>'Percentage of width' is the aspect ratio, 'Pixels' is absolute. Warning: the 'Percentage of parent' only works when the parent has an absolute height, else it will not display</description>
             <enumerationValues>
                 <enumerationValue key="percentageOfWidth">Percentage of width</enumerationValue>
@@ -32,7 +32,7 @@
         </property>
         <property key="height" type="integer" defaultValue="75">
             <caption>Max resolution height</caption>
-            <category>Capturing window</category>
+            <category>Appearance</category>
             <description/>
         </property>
         <property key="fileType" type="enumeration" defaultValue="jpeg">
@@ -56,32 +56,16 @@
                 <enumerationValue key="huerotate">Hue</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="photo" type="entity">
+        <property key="photo" type="entity" required="false">
             <caption>Select entity</caption>
             <category>Image</category>
             <description>This is the entity property</description>
         </property>
-        <property key="saveImage" type="microflow" required="true" defaultValue="" entityProperty="photo">
+        <property key="saveImage" type="microflow" required="false" defaultValue="">
             <caption>Save photo microflow</caption>
             <category>Image</category>
             <description>Select a microflow to save the image captured.</description>
             <returnType type="String" />
-        </property>
-        <property key="contents" type="attribute" required="true" entityProperty="photo">
-            <caption>Binary content Attribute</caption>
-            <category>Image</category>
-            <description>Select attribute to store contents.</description>
-            <attributeTypes>
-               <attributeType name="Binary" />
-            </attributeTypes>
-        </property>
-        <property key="name" type="attribute" required="true"  entityProperty="photo">
-            <caption>Name content Attribute</caption>
-            <category>Image</category>
-            <description>Select attribute to store contents.</description>
-            <attributeTypes>
-               <attributeType name="String" />
-            </attributeTypes>
         </property>
         <property key="captureButtonName" type="string" defaultValue="Take Photo">
             <caption>Capture button</caption>

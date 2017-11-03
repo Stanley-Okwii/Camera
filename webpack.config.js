@@ -5,17 +5,17 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const pkg = require("./package");
 const widgetName = pkg.widgetName;
-const name = pkg.widgetName.toLowerCase();
+const packageName = pkg.widgetName.toLowerCase();
 
 const widgetConfig = {
     entry: `./src/components/${widgetName}Container.ts`,
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: `src/com/mendix/widget/custom/${name}/${widgetName}.js`,
+        filename: `src/com/mendix/widget/custom/${packageName}/${widgetName}.js`,
         libraryTarget: "umd"
     },
     resolve: {
-        extensions: [ ".ts", ".js", ".json" ],
+        extensions: [ ".ts", ".js" ],
         alias: {
             "tests": path.resolve(__dirname, "./tests")
         }
@@ -26,7 +26,7 @@ const widgetConfig = {
             { test: /\.s?css$/,
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: ['css-loader', 'sass-loader']
+                    use: [ 'css-loader', 'sass-loader' ]
                     })
             }
         ]
@@ -40,7 +40,7 @@ const widgetConfig = {
         ], {
             copyUnmodified: true
         }),
-        new ExtractTextPlugin({ filename: `./src/com/mendix/widget/custom/${name}/ui/${widgetName}.css` }),
+        new ExtractTextPlugin({ filename: `./src/com/mendix/widget/custom/${packageName}/ui/${widgetName}.css` }),
         new webpack.LoaderOptionsPlugin({
             debug: true
         })
