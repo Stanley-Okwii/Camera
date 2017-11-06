@@ -1,6 +1,6 @@
-import { CElement, Component, createElement } from "react";
+import { Component, createElement } from "react";
 
-import { Camera, CameraProps, fileFormats } from "./Camera";
+import { Camera, fileFormats } from "./Camera";
 
 interface WrapperProps {
     class?: string;
@@ -43,6 +43,7 @@ export default class CameraContainer extends Component<ContainerProps> {
         this.executeMicroflow = this.executeMicroflow.bind(this);
         this.savePhoto = this.savePhoto.bind(this);
         this.base64toBlob = this.base64toBlob.bind(this);
+        this.passProps = this.passProps.bind(this);
     }
 
     render() {
@@ -52,9 +53,9 @@ export default class CameraContainer extends Component<ContainerProps> {
     private passProps() {
         return {
             ...this.props,
-            saveImage: this.props.saveImage,
             filter: this.formatStlye(),
-            onClickAction: this.savePhoto
+            onClickAction: this.savePhoto,
+            saveImage: this.props.saveImage
         };
     }
 
@@ -105,9 +106,6 @@ export default class CameraContainer extends Component<ContainerProps> {
             callback: (object) => {
                 const reader = new FileReader();
 
-                reader.onloadend = (progressEvent: ProgressEvent) => {
-                    this.base64 = reader.result;
-                };
                 reader.readAsBinaryString(this.base64toBlob(image.src));
                 object.set(this.props.contents, this.base64);
                 object.set(this.props.name, image.id);
@@ -129,9 +127,8 @@ export default class CameraContainer extends Component<ContainerProps> {
         });
     }
 
-    private base64toBlob(base64Uri: string, callback?: () => void): Blob {
+    private base64toBlob(base64Uri: string): Blob {
         const byteString = atob(base64Uri.split(",")[1]);
-        const mimeString = base64Uri.split(",")[0].split(":")[1].split(";")[0];
         const bufferArray = new ArrayBuffer(byteString.length);
         const uintArray = new Uint8Array(bufferArray);
 

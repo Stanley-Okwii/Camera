@@ -34,7 +34,6 @@
     "no-shadowed-variable": true,
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
-    "no-unused-variable":true,
     "no-unused-expression": true,
     "no-var-keyword": true,
     "one-line": [
@@ -97,6 +96,7 @@
     "no-unexpected-multiline": true,
     "no-sparse-arrays": true,
     "no-regex-spaces": true,
+    "no-implicit-dependencies": false,
     "no-invalid-regexp": true,
     "valid-typeof": true,
     "array-bracket-spacing": [
@@ -136,12 +136,10 @@
     "curly": false,
     "max-line-length": [
       true,
-      120
+      150
     ],
     "arrow-parens": false,
-    "no-namespace": false,
-    "array-type": [ true, "array" ],
-    "object-literal-sort-keys": false
+    "no-namespace": false
   },
   "jsRules": {
     "trailing-comma": [

@@ -50,10 +50,10 @@ export class Camera extends Component<CameraProps, CameraState> {
         super(props);
 
         this.state = {
-            screenshot: "",
-            pictureTaken: false,
             cameraDevicePosition: 0,
-            pictureId: ""
+            pictureId: "",
+            pictureTaken: false,
+            screenshot: ""
         };
 
         this.setCameraReference = this.setCameraReference.bind(this);
@@ -69,20 +69,20 @@ export class Camera extends Component<CameraProps, CameraState> {
         if (this.state.pictureTaken && this.state.screenshot) {
             return createElement("div", { className: classNames("parent") },
                 createElement("img", {
+                    alt: "Image could not be found!",
                     src: this.state.screenshot,
-                    style: this.createStyle(),
-                    alt: "Image could not be found!"
+                    style: this.createStyle()
                 }),
                 createElement("span", {
                     className: classNames("picture-class"),
                     onClick: this.retakePicture
                 },
-                this.createIcons(this.props.captureButtonName, `glyphicon glyphicon-${this.props.captureButtonIcon}`)),
+                    this.createIcons(this.props.captureButtonName, `glyphicon glyphicon-${this.props.captureButtonIcon}`)),
                 createElement("span", {
                     className: classNames("buttonSwitch"),
                     onClick: () => this.props.onClickAction({
-                        src: this.state.screenshot,
-                        id: this.state.pictureId
+                        id: this.state.pictureId,
+                        src: this.state.screenshot
                     }, this.props.saveImage)
                 }, this.createIcons(this.props.usePictureButtonName,
                     `glyphicon glyphicon-${this.props.usePictureButtonIcon}`)
@@ -108,7 +108,7 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     componentWillMount() {
         navigator.mediaDevices.enumerateDevices()
-            .then((devices: {}[]) => {
+          .then((devices: Array<{}>) => {
                 devices.filter((device: { kind: string, deviceId: string }) => {
                     if (device.kind === "videoinput") {
                         this.availableDevices.push(device.deviceId);
@@ -130,12 +130,10 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     private takePicture() {
         this.setState({
-            screenshot: this.webcam.getScreenshot(),
+            pictureId: `${this.webcam.stream.id}.${this.props.fileType}`,
             pictureTaken: true,
-            pictureId: `${this.webcam.stream.id}.${this.props.fileType}`
+            screenshot: this.webcam.getScreenshot()
         });
-        // tslint:disable-next-line:no-console
-        console.log(DOM.unmountComponentAtNode(WebCam));
     }
 
     private retakePicture() {
@@ -170,8 +168,8 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     private createStyle(): object {
         const style: CSSProperties = {
-            width: this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}px`,
-            filter: this.props.filter
+            filter: this.props.filter,
+            width: this.props.widthUnit === "percentage" ? `${this.props.width}%` : `${this.props.width}px`
         };
 
         if (this.props.heightUnit === "percentageOfWidth") {
@@ -203,10 +201,5 @@ export class Camera extends Component<CameraProps, CameraState> {
                 this.videoElement.srcObject = stream;
             }
         });
-    }
-
-    componentWillUnMount() {
-        // tslint:disable-next-line:no-console
-        console.log("unmounted");
     }
 }
