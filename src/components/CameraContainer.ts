@@ -8,7 +8,10 @@ interface WrapperProps {
     style?: object;
 }
 
-export interface ModellerProps extends WrapperProps {
+export interface ContainerProps extends WrapperProps {
+    saveImage: string;
+    filter: string;
+    onClickAction: (image: { src: string, id: string }, microflowName: string) => {};
     captureButtonName: string;
     recaptureButtonName: string;
     usePictureButtonName: string;
@@ -25,12 +28,6 @@ export interface ModellerProps extends WrapperProps {
     captionsToUse: string;
     name: string;
     contents: string;
-}
-
-export interface ContainerProps extends ModellerProps {
-    saveImage: string;
-    filter: string;
-    onClickAction: () => {};
  }
 
 export default class CameraContainer extends Component<ContainerProps> {
@@ -43,20 +40,26 @@ export default class CameraContainer extends Component<ContainerProps> {
         this.executeMicroflow = this.executeMicroflow.bind(this);
         this.savePhoto = this.savePhoto.bind(this);
         this.base64toBlob = this.base64toBlob.bind(this);
-        this.passProps = this.passProps.bind(this);
     }
 
     render() {
-        return createElement(Camera, this.passProps());
-    }
-
-    private passProps() {
-        return {
-            ...this.props,
+        return createElement(Camera as any, {
+            captionsToUse: this.props.captionsToUse,
+            captureButtonIcon: this.props.captureButtonIcon,
+            captureButtonName: this.props.captureButtonName,
+            fileType: this.props.fileType,
             filter: this.formatStlye(),
+            height: this.props.height,
+            heightUnit: this.props.heightUnit,
             onClickAction: this.savePhoto,
-            saveImage: this.props.saveImage
-        };
+            recaptureButtonName: this.props.recaptureButtonName,
+            saveImage: this.props.saveImage,
+            switchCameraIcon: this.props.switchCameraIcon,
+            usePictureButtonIcon: this.props.usePictureButtonIcon,
+            usePictureButtonName: this.props.usePictureButtonName,
+            width: this.props.width,
+            widthUnit: this.props.widthUnit
+        });
     }
 
     private formatStlye(): string {

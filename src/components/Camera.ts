@@ -1,5 +1,5 @@
 import { CSSProperties, Component, createElement } from "react";
-import * as DOM from "react-dom";
+import { findDOMNode } from "react-dom";
 import * as WebCam from "react-webcam";
 import * as classNames from "classnames";
 
@@ -15,7 +15,7 @@ export interface CameraProps {
     usePictureButtonName: string;
     fileType: string;
     filter: string;
-    onClickAction: ({ }, microflowName: string) => void;
+    onClickAction: (image: { src: string, id: string }, microflowName: string) => void;
     style?: object;
     captureButtonIcon: string;
     switchCameraIcon: string;
@@ -25,9 +25,9 @@ export interface CameraProps {
 }
 
 export interface CameraState {
+    cameraDevicePosition: number;
     screenshot: string;
     pictureTaken: boolean;
-    cameraDevicePosition: number;
     pictureId: string;
 }
 
@@ -42,7 +42,7 @@ export type fileFormats = "jpeg" | "png" | "svg";
 
 export class Camera extends Component<CameraProps, CameraState> {
     private webcam: Webcam;
-    private videoElement: HTMLVideoElement | null;
+    private videoElement: HTMLVideoElement;
     private outputStream: MediaStream;
     private availableDevices: string[] = [];
 
@@ -108,7 +108,7 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     componentWillMount() {
         navigator.mediaDevices.enumerateDevices()
-          .then((devices: Array<{}>) => {
+          .then((devices: Array<{kind: string, deviceId: string}>) => {
                 devices.filter((device: { kind: string, deviceId: string }) => {
                     if (device.kind === "videoinput") {
                         this.availableDevices.push(device.deviceId);
@@ -122,6 +122,11 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     componentDidUpdate() {
         this.getStream();
+    }
+
+    ComponentwillUnmount() {
+        // tslint:disable-next-line:no-console
+        console.log("It works");
     }
 
     private setCameraReference(webcam: Webcam) {
@@ -183,7 +188,7 @@ export class Camera extends Component<CameraProps, CameraState> {
     }
 
     private getStream() {
-        this.videoElement = DOM.findDOMNode(this).firstChild as HTMLVideoElement;
+        this.videoElement = findDOMNode(this).firstChild as HTMLVideoElement;
         const constraints = {
             audio: false,
             video: { deviceId: this.availableDevices[this.state.cameraDevicePosition] }

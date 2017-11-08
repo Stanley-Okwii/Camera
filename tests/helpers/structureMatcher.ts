@@ -157,9 +157,9 @@ export function toElementStructure(node: any): ElementStructure | ElementStructu
 
         const children = from(domNode.childNodes)
             .filter((child: Node) => child.nodeName !== "#comment")
-            .map(domToStructure);
+            .map(domToStructure as any);
 
-        return { type, props, children };
+        return { type, props, children } as any;
     }
 
     function reactToStructure(child: ReactChild | jasmine.Any): ElementStructure {
