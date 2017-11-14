@@ -9,7 +9,7 @@ span.buttonContainer{
     top: -42px;
     float: left;
 }
-span.buttonSwitch{
+span.switch-button{
     position: relative;
     cursor: pointer;
     top: -42px;
@@ -50,7 +50,7 @@ span.glyphicon{
         top: -42px;
         margin-left: 160px;
     }
-    span.buttonSwitch{
+    span.switch-button{
         position: relative;
         cursor: pointer;
         top: -230px;
@@ -64,7 +64,7 @@ span.glyphicon{
         top: -42px;
         margin-left: 267px;
     }
-    span.buttonSwitch{
+    span.switch-button{
         position: relative;
         cursor: pointer;
         top: -404px;
@@ -78,7 +78,7 @@ span.glyphicon{
         top: -42px;
         margin-left: 267px;
     }
-    span.buttonSwitch{
+    span.switch-button{
         position: relative;
         cursor: pointer;
         top: -404px;
@@ -92,7 +92,7 @@ span.glyphicon{
         top: -42px;
         margin-left: 128px;
     }
-    span.buttonSwitch{
+    span.switch-button{
         position: relative;
         cursor: pointer;
         top: -217px;
@@ -106,7 +106,7 @@ span.glyphicon{
         top: -42px;
         margin-left: 101px;
     }
-    span.buttonSwitch{
+    span.switch-button{
         position: relative;
         cursor: pointer;
         top: -179px;

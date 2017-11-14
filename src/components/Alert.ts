@@ -13,3 +13,7 @@ export const Alert: SFC<AlertProps> = ({ className, bootstrapStyle, message }: A
         : null;
 
 Alert.displayName = "Alert";
+
+Alert.defaultProps = {
+    bootstrapStyle: "danger"
+};

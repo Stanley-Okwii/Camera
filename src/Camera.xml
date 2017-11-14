@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="com.mendix.widget.custom.camera.Camera" needsEntityContext="false" offlineCapable="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../../../../xsd/widget.xsd">
+<widget id="com.mendix.widget.custom.camera.Camera" needsEntityContext="true" offlineCapable="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../../../../xsd/widget.xsd">
     <name>Camera</name>
     <description></description>
     <icon>
@@ -20,7 +20,7 @@
             <category>Appearance</category>
             <description/>
         </property>
-        <property key="heightUnit" type="enumeration" defaultValue="percentageOfWidth">
+        <property key="heightUnit" type="enumeration" defaultValue="percentageOfParent">
             <caption>Height unit</caption>
             <category>Appearance</category>
             <description>'Percentage of width' is the aspect ratio, 'Pixels' is absolute. Warning: the 'Percentage of parent' only works when the parent has an absolute height, else it will not display</description>
@@ -30,7 +30,7 @@
                 <enumerationValue key="percentageOfParent">Percentage of parent</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="height" type="integer" defaultValue="75">
+        <property key="height" type="integer" defaultValue="0">
             <caption>Max resolution height</caption>
             <category>Appearance</category>
             <description/>

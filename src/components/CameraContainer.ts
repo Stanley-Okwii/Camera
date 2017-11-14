@@ -1,6 +1,6 @@
 import { Component, createElement } from "react";
 
-import { Camera, fileFormats } from "./Camera";
+import { Camera, FileFormats } from "./Camera";
 
 interface WrapperProps {
     class?: string;
@@ -8,15 +8,12 @@ interface WrapperProps {
     style?: object;
 }
 
-export interface ContainerProps extends WrapperProps {
+export interface ModelerProps extends WrapperProps {
     saveImage: string;
-    filter: string;
-    onClickAction: (image: { src: string, id: string }, microflowName: string) => {};
     captureButtonName: string;
     recaptureButtonName: string;
     usePictureButtonName: string;
-    fileType: fileFormats;
-    imageFilter: string;
+    fileType: FileFormats;
     photo: string;
     widthUnit: string;
     heightUnit: string;
@@ -30,13 +27,20 @@ export interface ContainerProps extends WrapperProps {
     contents: string;
  }
 
+export interface ContainerProps extends ModelerProps {
+    onClickAction: (image: { src: string, id: string }, microflowName: string) => {};
+    imageFilter: string;
+    filter: string;
+}
+
 export default class CameraContainer extends Component<ContainerProps> {
     private base64: string;
+    // private mediaStream: MediaStream;
 
     constructor(props: ContainerProps) {
         super(props);
 
-        this.formatStlye = this.formatStlye.bind(this);
+        this.setFilter = this.setFilter.bind(this);
         this.executeMicroflow = this.executeMicroflow.bind(this);
         this.savePhoto = this.savePhoto.bind(this);
         this.base64toBlob = this.base64toBlob.bind(this);
@@ -44,25 +48,13 @@ export default class CameraContainer extends Component<ContainerProps> {
 
     render() {
         return createElement(Camera as any, {
-            captionsToUse: this.props.captionsToUse,
-            captureButtonIcon: this.props.captureButtonIcon,
-            captureButtonName: this.props.captureButtonName,
-            fileType: this.props.fileType,
-            filter: this.formatStlye(),
-            height: this.props.height,
-            heightUnit: this.props.heightUnit,
-            onClickAction: this.savePhoto,
-            recaptureButtonName: this.props.recaptureButtonName,
-            saveImage: this.props.saveImage,
-            switchCameraIcon: this.props.switchCameraIcon,
-            usePictureButtonIcon: this.props.usePictureButtonIcon,
-            usePictureButtonName: this.props.usePictureButtonName,
-            width: this.props.width,
-            widthUnit: this.props.widthUnit
+            ...this.props as ModelerProps,
+            filter: this.setFilter(),
+            onClickAction: this.savePhoto
         });
     }
 
-    private formatStlye(): string {
+    private setFilter(): string {
         if (this.props.imageFilter === "grayscale") {
             return "grayscale(1)";
         }
