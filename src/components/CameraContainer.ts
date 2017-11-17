@@ -35,7 +35,6 @@ export interface ContainerProps extends ModelerProps {
 
 export default class CameraContainer extends Component<ContainerProps> {
     private base64: string;
-    // private mediaStream: MediaStream;
 
     constructor(props: ContainerProps) {
         super(props);
@@ -69,7 +68,7 @@ export default class CameraContainer extends Component<ContainerProps> {
     }
 
     private savePhoto(image: { src: string, id: string }, microflow: string) {
-        if (this.props.mxObject.inheritsFrom("System.Image")) {
+        if (this.props.mxObject.inheritsFrom("System.Image") && image.src) {
             mx.data.saveDocument(
                 this.props.mxObject.getGuid(),
                 image.id,

@@ -56,15 +56,15 @@
                 <enumerationValue key="huerotate">Hue</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="photo" type="entity" required="false">
+        <property key="photo" type="entity" required="true">
             <caption>Select entity</caption>
             <category>Behaviour</category>
             <description>This is the entity property</description>
         </property>
         <property key="saveImage" type="microflow" required="false" defaultValue="">
-            <caption>Save photo microflow</caption>
+            <caption>After use photo microflow</caption>
             <category>Behaviour</category>
-            <description>Select a microflow to save the image captured.</description>
+            <description>Select a microflow to execute after the image has successfully saved.</description>
             <returnType type="String" />
         </property>
         <property key="captureButtonName" type="translatableString" required="false" >
@@ -76,17 +76,17 @@
                 <translation lang="nl_NL">Maak enn foto</translation>
             </translations>
         </property>
-        <property key="captureButtonIcon" type="string" defaultValue="">
+        <property key="captureButtonIcon" type="string" defaultValue="camera">
             <caption>Capture icon</caption>
             <category>Button captions</category>
             <description>The name of the glyph-icon to use for capture feature.</description>
         </property>
-        <property key="switchCameraIcon" type="string" defaultValue="">
+        <property key="switchCameraIcon" type="string" defaultValue="refresh">
             <caption>Switch camera icon</caption>
             <category>Button captions</category>
             <description>The name of the glyph-icon to use for switch camera. </description>
         </property>
-        <property key="usePictureButtonIcon" type="string" defaultValue="">
+        <property key="usePictureButtonIcon" type="string" defaultValue="download">
             <caption>Use picture icon</caption>
             <category>Button captions</category>
             <description>This button provides the option to capture the image.</description>
