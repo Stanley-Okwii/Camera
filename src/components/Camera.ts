@@ -27,7 +27,7 @@ export interface CameraProps {
 }
 
 export interface CameraState {
-    noBrowserSupport: boolean;
+    browserSupport: boolean;
     cameraDevicePosition: number;
     screenshot: string;
     noRepeat: boolean;
@@ -52,8 +52,8 @@ export class Camera extends Component<CameraProps, CameraState> {
         super(props);
 
         this.state = {
+            browserSupport: true,
             cameraDevicePosition: 0,
-            noBrowserSupport: false,
             noRepeat: false,
             pictureId: "",
             pictureTaken: false,
@@ -70,7 +70,7 @@ export class Camera extends Component<CameraProps, CameraState> {
     }
 
     render() {
-        if (this.state.noBrowserSupport) {
+        if (this.state.browserSupport === false) {
             return this.renderAlert("This browser does not support the camera widget. Google-chrome is recommended.");
         }
         if (this.state.pictureTaken && this.state.screenshot) {
@@ -82,7 +82,7 @@ export class Camera extends Component<CameraProps, CameraState> {
 
     componentWillMount() {
         if (!navigator.mediaDevices) {
-            this.setState({ noBrowserSupport: true });
+            this.setState({ browserSupport: false });
         } else {
             navigator.mediaDevices.enumerateDevices()
                 .then((devices: Array<{ kind: string, deviceId: string }>) => {
@@ -101,7 +101,7 @@ export class Camera extends Component<CameraProps, CameraState> {
     }
 
     componentDidUpdate() {
-        if (this.state.noBrowserSupport) {
+        if (this.state.browserSupport === false) {
             return null;
         } else {
             this.getStream();
@@ -113,7 +113,6 @@ export class Camera extends Component<CameraProps, CameraState> {
     componentWillUnmount() {
         // tslint:disable-next-line:no-console
         console.log("Unmounted from ts.");
-        //  this.getStream();
     }
 
     private setCameraReference(webcam: Webcam) {

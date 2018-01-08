@@ -10,7 +10,7 @@ Allows users to take and save pictures on their mendix applications.
 * Swap between the different camera devices
 
 ## Dependencies
-Mendix 7.6
+Mendix 7.8
 
 ## Demo project
 https://cameratest100.mxapps.io/
