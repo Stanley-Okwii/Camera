@@ -5,7 +5,7 @@ import * as classNames from "classnames";
 
 import { Alert, AlertProps } from "./Alert";
 
-import "../ui/Camera.css";
+import "../ui/Camera.scss";
 
 export interface CameraProps {
     captureButtonName: string;
@@ -129,9 +129,7 @@ export class Camera extends Component<CameraProps, CameraState> {
         });
     }
 
-    private retakePicture() {
-        this.setState({ pictureTaken: false });
-    }
+    private retakePicture() { this.setState({ pictureTaken: false }); }
 
     private changeCamera() {
         const cameraDevicePosition: number = this.state.cameraDevicePosition < (this.availableDevices.length - 1)

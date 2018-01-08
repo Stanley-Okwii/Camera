@@ -2,10 +2,11 @@ import { Component, createElement } from "react";
 
 import { Camera, FileFormats } from "./Camera";
 
+import { parseStyle } from "../utils/ContainerUtils";
+
 interface WrapperProps {
-    class?: string;
     mxObject: mendix.lib.MxObject;
-    style?: object;
+    style: string;
 }
 
 export interface ModelerProps extends WrapperProps {
@@ -49,33 +50,31 @@ export default class CameraContainer extends Component<ContainerProps> {
         return createElement(Camera as any, {
             ...this.props as ModelerProps,
             filter: this.setFilter(),
-            onClickAction: this.savePhoto
+            onClickAction: this.savePhoto,
+            style: parseStyle(this.props.style)
         });
     }
 
     private setFilter(): string {
         if (this.props.imageFilter === "grayscale") {
             return "grayscale(1)";
-        }
-        if (this.props.imageFilter === "huerotate") {
+        } else if (this.props.imageFilter === "huerotate") {
             return "hue-rotate(90deg)";
-        }
-        if (this.props.imageFilter === "sepia") {
+        } else if (this.props.imageFilter === "sepia") {
             return "sepia(1)";
-        }
-
-        return "none";
+        } else
+            return "none";
     }
 
     private savePhoto(image: { src: string, id: string }, microflow: string) {
         if (this.props.mxObject.inheritsFrom("System.Image") && image.src) {
-            mx.data.saveDocument(
+            window.mx.data.saveDocument(
                 this.props.mxObject.getGuid(),
                 image.id,
                 {},
                 this.base64toBlob(image.src),
                 () => {
-                    mx.ui.info("Image has been saved", false);
+                    window.mx.ui.info("Image has been saved", false);
                     if (microflow) {
                     window.mx.ui.action(microflow, {
                         error: (error) => {
@@ -88,15 +87,15 @@ export default class CameraContainer extends Component<ContainerProps> {
                     }, this);
                 }
                 },
-                error => { mx.ui.error(error.message, false); }
+                error => { window.mx.ui.error(error.message, false); }
             );
         } else {
-            mx.ui.error("The entity does not inherit from System Image", false);
+            window.mx.ui.error("The entity does not inherit from System Image", false);
         }
     }
 
     private executeMicroflow(image: { src: string, id: string }, microflow: string) {
-        mx.data.create({
+        window.mx.data.create({
             callback: (object) => {
                 const reader = new FileReader();
 
@@ -116,7 +115,7 @@ export default class CameraContainer extends Component<ContainerProps> {
             },
             entity: this.props.photo,
             error: error => {
-                mx.ui.error(`Could not create object: ${error}`);
+                window.mx.ui.error(`Could not create object: ${error}`);
             }
         });
     }
